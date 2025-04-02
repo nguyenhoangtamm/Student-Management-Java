@@ -1,5 +1,7 @@
 package com.tam.StudentManagement.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,9 +27,11 @@ public class DormitoryService extends BaseModel {
 
     @ManyToOne
     @JoinColumn(name = "dormitory_id")
+    @JsonIgnore
     private Dormitory dormitory;
 
     @ManyToOne
     @JoinColumn(name = "service_id")
+    @JsonIgnore
     private Service service;
 }

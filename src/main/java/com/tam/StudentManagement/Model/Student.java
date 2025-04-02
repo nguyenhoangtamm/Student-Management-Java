@@ -129,4 +129,8 @@ public class Student extends BaseModel {
     @JoinColumn(name = "province_id")
     @JsonIgnore
     private Province province;
+    
+    @OneToMany(mappedBy = "student")
+    @JsonIgnore
+    private List<Review> reviews;
 }

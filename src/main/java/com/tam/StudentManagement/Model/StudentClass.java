@@ -1,7 +1,7 @@
 package com.tam.StudentManagement.Model;
 import jakarta.persistence.*;
 import lombok.Data;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
 @Entity
@@ -22,5 +22,6 @@ public class StudentClass extends BaseModel{
 
 
     @OneToMany(mappedBy = "studentClass", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Student> students;
 }

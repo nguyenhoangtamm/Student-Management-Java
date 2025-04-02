@@ -6,6 +6,8 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Getter
 @Setter
@@ -25,5 +27,6 @@ public class Notification {
     private boolean isDelete;
 
     @OneToMany(mappedBy = "notification")
+    @JsonIgnore
     private List<StudentNotification> studentNotifications;
 }

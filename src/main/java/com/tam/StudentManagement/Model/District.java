@@ -1,6 +1,7 @@
 package com.tam.StudentManagement.Model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,13 +25,17 @@ public class District extends BaseModel {
 
     @ManyToOne
     @JoinColumn(name = "province_id")
+    @JsonIgnore
     private Province province;
 
     @OneToMany(mappedBy = "district")
+    @JsonIgnore
     private List<Ward> wards;
     @OneToMany(mappedBy = "district")
+    @JsonIgnore
     private List<Student> students;
 
     @OneToMany(mappedBy = "district")
+    @JsonIgnore
     private List<Dormitory> dormitories;
 }

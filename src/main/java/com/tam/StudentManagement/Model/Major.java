@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 @Entity
@@ -23,6 +25,7 @@ public class Major {
     @Column(name = "students", nullable = false)
     private Integer totalStudent = 0;
     @OneToMany(mappedBy = "major", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Student> students;
 
 }

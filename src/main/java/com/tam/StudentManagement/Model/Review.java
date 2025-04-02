@@ -28,6 +28,7 @@ public class Review extends BaseModel {
     @Column(columnDefinition = "TEXT")
     private String comment;
 
+    @Column(name = "type")
     private Integer type;
 
     @ManyToOne

@@ -1,18 +1,19 @@
 package com.tam.StudentManagement.Model;
 
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "services")
+@Table(name = "regulations")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Service extends BaseModel {
+public class Regulation extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -20,13 +21,17 @@ public class Service extends BaseModel {
     @Column(length = 255)
     private String name;
 
-    @Column(length = 255)
-    private String unit;
+    private Integer type;
 
     @Column(length = 255)
-    private String description;
+    private String url;
 
-    @OneToMany(mappedBy = "service")
-    @JsonIgnore
-    private List<DormitoryService> dormitoryServices;
+    @Column(name = "effective_date")
+    private LocalDate effectiveDate;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
+
+    @Column(length = 255)
+    private String slug;
 }
