@@ -4,13 +4,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "students")
 @Data
-public class Student extends  BaseModel{
+@NoArgsConstructor
+@AllArgsConstructor
+public class Student extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -39,10 +44,10 @@ public class Student extends  BaseModel{
     @Column(length = 30)
     private String room;
 
-    @Column(name = "class_id", nullable = false)
+    @Column(name = "class_id", nullable = false, insertable = false, updatable = false)
     private Integer classId;
 
-    @Column(name = "major_id", nullable = false)
+    @Column(name = "major_id", nullable = false, insertable = false, updatable = false)
     private Integer majorId;
 
     @Column(name = "phone_number", nullable = false, unique = true, length = 30)
@@ -82,22 +87,46 @@ public class Student extends  BaseModel{
     @Column(name = "full_address", columnDefinition = "TEXT")
     private String fullAddress;
 
-    @Column(name = "ward_id")
+    @Column(name = "ward_id", insertable = false, updatable = false)
     private Integer wardId;
 
-    @Column(name = "district_id")
+    @Column(name = "district_id", insertable = false, updatable = false)
     private Integer districtId;
 
-    @Column(name = "province_id")
+    @Column(name = "province_id", insertable = false, updatable = false)
     private Integer provinceId;
+
     @ManyToOne
     @JoinColumn(name = "dormitory_id", referencedColumnName = "id")
     @JsonIgnore
-
     private Dormitory dormitory;
 
+    @ManyToOne
+    @JoinColumn(name = "class_id", referencedColumnName = "id")
+    @JsonIgnore
+    private StudentClass studentClass;
 
+    @ManyToOne
+    @JoinColumn(name = "major_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Major major;
 
+    @OneToMany(mappedBy = "student")
+    @JsonIgnore
+    private List<StudentNotification> studentNotifications;
 
+    @ManyToOne
+    @JoinColumn(name = "ward_id")
+    @JsonIgnore
+    private Ward ward;
 
+    @ManyToOne
+    @JoinColumn(name = "district_id")
+    @JsonIgnore
+    private District district;
+
+    @ManyToOne
+    @JoinColumn(name = "province_id")
+    @JsonIgnore
+    private Province province;
 }
