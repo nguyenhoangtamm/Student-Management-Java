@@ -11,7 +11,7 @@ import lombok.Data;
 @Entity
 @Table(name = "majors")
 @Data
-public class Major {
+public class Major extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

@@ -27,6 +27,7 @@ public class StudentService implements IStudentService {
     public Optional<Student> getStudentById(Integer id) {
         return studentRepository.findById(id);
     }
+
     @Override
     public StudentDto createStudent(CreateStudentRequest request) {
         Student entity = new Student();
@@ -61,7 +62,6 @@ public class StudentService implements IStudentService {
 
         return new StudentDto(entity);
     }
-
 
     @Override
     public Student updateStudent(Integer id, UpdateStudentRequest studentDetails) {
@@ -151,7 +151,6 @@ public class StudentService implements IStudentService {
             return studentRepository.save(student);
         }).orElseThrow(() -> new RuntimeException("Student not found"));
     }
-
 
     @Override
     public String deleteStudent(Integer id) {
