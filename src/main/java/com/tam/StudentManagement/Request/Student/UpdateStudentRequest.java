@@ -2,8 +2,7 @@
 package com.tam.StudentManagement.Request.Student;
 
 import jakarta.validation.constraints.*;
-        import lombok.Data;
-import org.hibernate.annotations.Type;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,7 +20,6 @@ public class UpdateStudentRequest {
 
     @NotBlank(message = "Họ và tên không được để trống")
     private String fullName;
-
 
     @Min(value = 0, message = "Giới tính chỉ được nhập 0 hoặc 1")
     @Max(value = 1, message = "Giới tính chỉ được nhập 0 hoặc 1")

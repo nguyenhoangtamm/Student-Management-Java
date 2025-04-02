@@ -3,10 +3,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
-
+import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "student_classes")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class StudentClass extends BaseModel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -7,10 +7,11 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
-
+import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "majors")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class Major extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

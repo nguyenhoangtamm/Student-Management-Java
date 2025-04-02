@@ -9,10 +9,11 @@ import java.util.List;
 import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
+import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "students")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Student extends BaseModel {

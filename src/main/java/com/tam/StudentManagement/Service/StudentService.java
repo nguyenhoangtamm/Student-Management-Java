@@ -160,4 +160,10 @@ public class StudentService implements IStudentService {
         return "Student marked as deleted successfully";
 
     }
+
+    @Override
+    public String getMajorByStudentId(Integer id) {
+        return studentRepository.findById(id).map(student -> student.getMajor().getName())
+                .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
+    }
 }

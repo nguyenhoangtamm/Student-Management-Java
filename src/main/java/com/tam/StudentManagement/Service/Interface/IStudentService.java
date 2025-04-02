@@ -14,4 +14,5 @@ public interface IStudentService {
     StudentDto createStudent(CreateStudentRequest student);
     Student updateStudent(Integer id, UpdateStudentRequest studentDetails);
     String deleteStudent(Integer id);
+    String getMajorByStudentId(Integer id);
 }

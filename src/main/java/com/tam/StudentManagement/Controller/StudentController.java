@@ -24,7 +24,10 @@ public class StudentController {
     public ResponseEntity<List<Student>> getAllStudents() {
         return ResponseEntity.ok(studentService.getAllStudents());
     }
-
+    @GetMapping("/{id}/major")
+    public ResponseEntity<String> getMajorByStudentId(@PathVariable Integer id) {
+        return ResponseEntity.ok(studentService.getMajorByStudentId(id));
+    }
     // Lấy thông tin sinh viên theo ID
     @GetMapping("/{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable Integer id) {
