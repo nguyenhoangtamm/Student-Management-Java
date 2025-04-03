@@ -1,7 +1,6 @@
 package com.tam.StudentManagement.Controller;
 
 import com.tam.StudentManagement.Dto.Student.StudentDto;
-import com.tam.StudentManagement.Dto.Student.StudentPaginationResponse;
 import com.tam.StudentManagement.Dto.Student.StudentDashboardDto;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Student.CreateStudentDto;

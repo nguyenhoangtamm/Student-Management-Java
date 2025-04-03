@@ -1,11 +1,13 @@
 package com.tam.StudentManagement.Dto.Major;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import com.tam.StudentManagement.Model.Major;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MajorDto {
     private Integer id;
     private String code;

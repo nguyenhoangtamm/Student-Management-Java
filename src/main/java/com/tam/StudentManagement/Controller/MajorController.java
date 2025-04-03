@@ -1,9 +1,12 @@
 package com.tam.StudentManagement.Controller;
 
 import com.tam.StudentManagement.Dto.Major.MajorDto;
+import com.tam.StudentManagement.Dto.Major.CreateMajorDto;
+import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Model.Major;
 import com.tam.StudentManagement.Request.Major.CreateMajorRequest;
 import com.tam.StudentManagement.Request.Major.UpdateMajorRequest;
+import com.tam.StudentManagement.Response.ApiResponse;
 import com.tam.StudentManagement.Service.Interface.IMajorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,35 +22,45 @@ public class MajorController {
     @Autowired
     private IMajorService majorService;
 
-    // Lấy danh sách ngành học
     @GetMapping
-    public ResponseEntity<List<Major>> getAllMajors() {
-        return ResponseEntity.ok(majorService.getAllMajors());
+    public ResponseEntity<ApiResponse<List<Major>>> getAllMajors() {
+        List<Major> majors = majorService.getAllMajors();
+        return ResponseEntity.ok(ApiResponse.success("Get majors successfully", majors));
     }
 
-    // Lấy thông tin ngành học theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Major> getMajorById(@PathVariable Integer id) {
-        return majorService.getMajorById(id).map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<ApiResponse<Major>> getMajorById(@PathVariable Integer id) {
+        return majorService.getMajorById(id)
+                .map(major -> ResponseEntity.ok(ApiResponse.success("Get major successfully", major)))
+                .orElseGet(() -> ResponseEntity.ok(ApiResponse.error("Major not found")));
     }
 
-    // Thêm mới ngành học
     @PostMapping
-    public ResponseEntity<MajorDto> createMajor(@Valid @RequestBody CreateMajorRequest major) {
-        return ResponseEntity.ok(majorService.createMajor(major));
+    public ResponseEntity<ApiResponse<CreateMajorDto>> createMajor(
+            @Valid @RequestBody CreateMajorRequest request) {
+        CreateMajorDto createdMajor = majorService.createMajor(request);
+        return ResponseEntity.ok(ApiResponse.success("Create major successfully", createdMajor));
     }
 
-    // Cập nhật thông tin ngành học
     @PutMapping("/{id}")
-    public ResponseEntity<Major> updateMajor(@PathVariable Integer id,
-            @Valid @RequestBody UpdateMajorRequest majorDetails) {
-        return ResponseEntity.ok(majorService.updateMajor(id, majorDetails));
+    public ResponseEntity<ApiResponse<Major>> updateMajor(@PathVariable Integer id,
+            @Valid @RequestBody UpdateMajorRequest request) {
+        Major updatedMajor = majorService.updateMajor(id, request);
+        return ResponseEntity.ok(ApiResponse.success("Update major successfully", updatedMajor));
     }
 
-    // Xóa ngành học (đánh dấu isDelete thay vì xóa thật sự)
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteMajor(@PathVariable Integer id) {
-        return ResponseEntity.ok(majorService.deleteMajor(id));
+    public ResponseEntity<ApiResponse<String>> deleteMajor(@PathVariable Integer id) {
+        String message = majorService.deleteMajor(id);
+        return ResponseEntity.ok(ApiResponse.success("Delete major successfully", message));
     }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<ApiResponse<PaginationDto<MajorDto>>> getMajorsByPagination(
+            @RequestParam int pageNumber,
+            @RequestParam int pageSize,
+            @RequestParam(required = false) String keyword) {
+        PaginationDto<MajorDto> data = majorService.getMajorsByPagination(pageNumber, pageSize, keyword);
+        return ResponseEntity.ok(ApiResponse.success("Get majors by pagination successfully", data));
+    }   
 }

@@ -1,16 +1,23 @@
 package com.tam.StudentManagement.Service;
 
+import com.tam.StudentManagement.Dto.Major.CreateMajorDto;
 import com.tam.StudentManagement.Dto.Major.MajorDto;
+import com.tam.StudentManagement.Dto.Common.PaginationDto;
+import com.tam.StudentManagement.Dto.Common.PaginationInfo;
 import com.tam.StudentManagement.Model.Major;
 import com.tam.StudentManagement.Repository.MajorRepository;
 import com.tam.StudentManagement.Request.Major.CreateMajorRequest;
 import com.tam.StudentManagement.Request.Major.UpdateMajorRequest;
 import com.tam.StudentManagement.Service.Interface.IMajorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MajorService implements IMajorService {
@@ -29,7 +36,7 @@ public class MajorService implements IMajorService {
     }
 
     @Override
-    public MajorDto createMajor(CreateMajorRequest request) {
+    public CreateMajorDto createMajor(CreateMajorRequest request) {
         Major entity = new Major();
         entity.setCode(request.getCode());
         entity.setName(request.getName());
@@ -37,7 +44,7 @@ public class MajorService implements IMajorService {
 
         majorRepository.save(entity);
 
-        return new MajorDto(entity);
+        return new CreateMajorDto(entity);
     }
 
     @Override
@@ -60,5 +67,16 @@ public class MajorService implements IMajorService {
             majorRepository.save(major);
             return "Major deleted successfully";
         }).orElse("Major not found");
+    }
+
+    @Override
+    public PaginationDto<MajorDto> getMajorsByPagination(int pageNumber, int pageSize, String keyword) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        Page<Major> page = majorRepository.findAll(pageable);
+        List<Major> majors = page.getContent();
+        List<MajorDto> majorDtos = majors.stream().map(MajorDto::new).collect(Collectors.toList());
+        PaginationInfo paginationInfo = new PaginationInfo(pageNumber, pageSize, page.getTotalElements(),
+                page.getTotalPages());
+        return new PaginationDto<MajorDto>(majorDtos, paginationInfo);
     }
 }

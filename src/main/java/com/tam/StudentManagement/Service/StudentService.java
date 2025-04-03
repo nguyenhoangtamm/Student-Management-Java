@@ -6,7 +6,6 @@ import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Common.PaginationInfo;
 import com.tam.StudentManagement.Dto.Student.CreateStudentDto;
 import com.tam.StudentManagement.Dto.Student.StudentDashboardDto;
-import com.tam.StudentManagement.Dto.Student.StudentPaginationResponse;
 import com.tam.StudentManagement.Model.*;
 import com.tam.StudentManagement.Repository.*;
 import com.tam.StudentManagement.Request.Student.CreateStudentRequest;

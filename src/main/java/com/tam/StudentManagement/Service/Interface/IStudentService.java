@@ -4,7 +4,6 @@ import com.tam.StudentManagement.Dto.Student.StudentDto;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Student.CreateStudentDto;
 import com.tam.StudentManagement.Dto.Student.StudentDashboardDto;
-import com.tam.StudentManagement.Dto.Student.StudentPaginationResponse;
 import com.tam.StudentManagement.Model.Student;
 import com.tam.StudentManagement.Request.Student.CreateStudentRequest;
 import com.tam.StudentManagement.Request.Student.UpdateStudentRequest;
