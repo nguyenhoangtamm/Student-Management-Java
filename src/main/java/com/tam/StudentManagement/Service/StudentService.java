@@ -1,22 +1,50 @@
 package com.tam.StudentManagement.Service;
 
 import com.tam.StudentManagement.Dto.Student.StudentDto;
-import com.tam.StudentManagement.Model.Student;
-import com.tam.StudentManagement.Repository.StudentRepository;
+import com.tam.StudentManagement.Exception.DuplicateException;
+import com.tam.StudentManagement.Dto.Common.PaginationDto;
+import com.tam.StudentManagement.Dto.Common.PaginationInfo;
+import com.tam.StudentManagement.Dto.Student.CreateStudentDto;
+import com.tam.StudentManagement.Dto.Student.StudentDashboardDto;
+import com.tam.StudentManagement.Dto.Student.StudentPaginationResponse;
+import com.tam.StudentManagement.Model.*;
+import com.tam.StudentManagement.Repository.*;
 import com.tam.StudentManagement.Request.Student.CreateStudentRequest;
 import com.tam.StudentManagement.Request.Student.UpdateStudentRequest;
 import com.tam.StudentManagement.Service.Interface.IStudentService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService implements IStudentService {
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private DormitoryRepository dormitoryRepository;
+
+    @Autowired
+    private MajorRepository majorRepository;
+
+    @Autowired
+    private StudentClassRepository studentClassRepository;
+
+    @Autowired
+    private WardRepository wardRepository;
+
+    @Autowired
+    private DistrictRepository districtRepository;
+
+    @Autowired
+    private ProvinceRepository provinceRepository;
 
     @Override
     public List<Student> getAllStudents() {
@@ -29,7 +57,20 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public StudentDto createStudent(CreateStudentRequest request) {
+    public CreateStudentDto createStudent(CreateStudentRequest request) {
+        Student exitEntity = studentRepository.findByCode(request.getCode());
+        if (exitEntity != null) {
+            throw new DuplicateException("Student code already exists");
+        }
+        exitEntity = studentRepository.findByEmail(request.getEmail());
+        if (exitEntity != null) {
+            throw new DuplicateException("Email already exists");
+        }
+        exitEntity = studentRepository.findByPhoneNumber(request.getPhoneNumber());
+        if (exitEntity != null) {
+            throw new DuplicateException("Phone number already exists");
+        }
+
         Student entity = new Student();
         entity.setCode(request.getCode());
         entity.setPassword(request.getPassword());
@@ -37,10 +78,27 @@ public class StudentService implements IStudentService {
         entity.setGender(request.getGender());
         entity.setDateOfBirth(request.getDateOfBirth());
         entity.setFaculty(request.getFaculty());
-        entity.setDormitoryId(request.getDormitoryId());
+
+        // Set dormitory relationship if dormitoryId is provided
+        if (request.getDormitoryId() != null) {
+            Optional<Dormitory> dormitory = dormitoryRepository.findById(request.getDormitoryId());
+            dormitory.ifPresent(entity::setDormitory);
+        }
+
         entity.setRoom(request.getRoom());
-        entity.setClassId(request.getClassId());
-        entity.setMajorId(request.getMajorId());
+
+        // Set major relationship
+        if (request.getMajorId() != null) {
+            Optional<Major> major = majorRepository.findById(request.getMajorId());
+            major.ifPresent(entity::setMajor);
+        }
+
+        // Set student class relationship
+        if (request.getClassId() != null) {
+            Optional<StudentClass> studentClass = studentClassRepository.findById(request.getClassId());
+            studentClass.ifPresent(entity::setStudentClass);
+        }
+
         entity.setPhoneNumber(request.getPhoneNumber());
         entity.setEmail(request.getEmail());
         entity.setEducationLevel(request.getEducationLevel());
@@ -54,20 +112,46 @@ public class StudentService implements IStudentService {
         entity.setContractStatus(request.getContractStatus());
         entity.setAddress(request.getAddress());
         entity.setFullAddress(request.getFullAddress());
-        entity.setWardId(request.getWardId());
-        entity.setDistrictId(request.getDistrictId());
-        entity.setProvinceId(request.getProvinceId());
+
+        // Set ward relationship
+        if (request.getWardId() != null) {
+            Optional<Ward> ward = wardRepository.findById(request.getWardId());
+            ward.ifPresent(entity::setWard);
+        }
+
+        // Set district relationship
+        if (request.getDistrictId() != null) {
+            Optional<District> district = districtRepository.findById(request.getDistrictId());
+            district.ifPresent(entity::setDistrict);
+        }
+
+        // Set province relationship
+        if (request.getProvinceId() != null) {
+            Optional<Province> province = provinceRepository.findById(request.getProvinceId());
+            province.ifPresent(entity::setProvince);
+        }
 
         studentRepository.save(entity);
 
-        return new StudentDto(entity);
+        return new CreateStudentDto(entity);
     }
 
     @Override
     public Student updateStudent(Integer id, UpdateStudentRequest studentDetails) {
+        Student exitEntity = studentRepository.findByCode(studentDetails.getCode());
+        if (exitEntity != null) {
+            throw new DuplicateException("Student code already exists");
+        }
+        exitEntity = studentRepository.findByEmail(studentDetails.getEmail());
+        if (exitEntity != null) {
+            throw new DuplicateException("Email already exists");
+        }
+        exitEntity = studentRepository.findByPhoneNumber(studentDetails.getPhoneNumber());
+        if (exitEntity != null) {
+            throw new DuplicateException("Phone number already exists");
+        }
 
         return studentRepository.findById(id).map(student -> {
-            // Cập nhật thông tin từ UpdateStudentRequest vào đối tượng student
             if (studentDetails.getFullName() != null) {
                 student.setFullName(studentDetails.getFullName());
             }
@@ -93,16 +177,19 @@ public class StudentService implements IStudentService {
                 student.setFaculty(studentDetails.getFaculty());
             }
             if (studentDetails.getDormitoryId() != null) {
-                student.setDormitoryId(studentDetails.getDormitoryId());
+                Optional<Dormitory> dormitory = dormitoryRepository.findById(studentDetails.getDormitoryId());
+                dormitory.ifPresent(student::setDormitory);
             }
             if (studentDetails.getRoom() != null) {
                 student.setRoom(studentDetails.getRoom());
             }
-            if (studentDetails.getClassId() != null) {
-                student.setClassId(studentDetails.getClassId());
-            }
             if (studentDetails.getMajorId() != null) {
-                student.setMajorId(studentDetails.getMajorId());
+                Optional<Major> major = majorRepository.findById(studentDetails.getMajorId());
+                major.ifPresent(student::setMajor);
+            }
+            if (studentDetails.getClassId() != null) {
+                Optional<StudentClass> studentClass = studentClassRepository.findById(studentDetails.getClassId());
+                studentClass.ifPresent(student::setStudentClass);
             }
             if (studentDetails.getEducationLevel() != null) {
                 student.setEducationLevel(studentDetails.getEducationLevel());
@@ -138,16 +225,17 @@ public class StudentService implements IStudentService {
                 student.setFullAddress(studentDetails.getFullAddress());
             }
             if (studentDetails.getWardId() != null) {
-                student.setWardId(studentDetails.getWardId());
+                Optional<Ward> ward = wardRepository.findById(studentDetails.getWardId());
+                ward.ifPresent(student::setWard);
             }
             if (studentDetails.getDistrictId() != null) {
-                student.setDistrictId(studentDetails.getDistrictId());
+                Optional<District> district = districtRepository.findById(studentDetails.getDistrictId());
+                district.ifPresent(student::setDistrict);
             }
             if (studentDetails.getProvinceId() != null) {
-                student.setProvinceId(studentDetails.getProvinceId());
+                Optional<Province> province = provinceRepository.findById(studentDetails.getProvinceId());
+                province.ifPresent(student::setProvince);
             }
-
-            // Lưu đối tượng sinh viên đã được cập nhật vào cơ sở dữ liệu
             return studentRepository.save(student);
         }).orElseThrow(() -> new RuntimeException("Student not found"));
     }
@@ -158,12 +246,60 @@ public class StudentService implements IStudentService {
                 .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
         studentRepository.deleteById(id);
         return "Student marked as deleted successfully";
-
     }
 
     @Override
-    public String getMajorByStudentId(Integer id) {
-        return studentRepository.findById(id).map(student -> student.getMajor().getName())
-                .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
+    public StudentDashboardDto getDashboard() {
+        // TODO: Replace with actual student data from authentication
+        Student student = studentRepository.findAll().get(0); // Temporary: Get first student for testing
+
+        StudentDashboardDto.OffCampusInfo offCampusInfo = new StudentDashboardDto.OffCampusInfo(
+                student.getDormitory() != null ? student.getDormitory().getName() : "KTX Đại học Đồng Tháp",
+                student.getContractStatus() != null && student.getContractStatus() == 1 ? "Đã ký hợp đồng"
+                        : "Chưa ký hợp đồng",
+                "2025-03-09T15:00:50.000000Z",
+                student.getRoom(),
+                student.getFullAddress());
+
+        return new StudentDashboardDto(
+                student.getCode(),
+                student.getFullName(),
+                student.getGender(),
+                student.getDateOfBirth().toString(),
+                student.getBirthplace(),
+                student.getFaculty(),
+                student.getEmail(),
+                student.getAvatar(),
+                1, // TODO: Implement actual unread notifications count
+                offCampusInfo,
+                new Object[] {} // TODO: Implement actual notifications
+        );
     }
+
+    @Override
+    public PaginationDto<StudentDto> getStudentsByPagination(int pageNumber, int pageSize, String keyword) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize); // Convert to 0-based page number
+        Page<Student> studentPage;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            studentPage = studentRepository
+                    .findByFullNameContainingOrCodeContainingOrEmailContainingOrPhoneNumberContaining(
+                            keyword, keyword, keyword, keyword, pageable);
+        } else {
+            studentPage = studentRepository.findAll(pageable);
+        }
+
+        List<StudentDto> studentDtos = studentPage.getContent().stream()
+                .map(StudentDto::new)
+                .collect(Collectors.toList());
+
+        PaginationInfo paginationInfo = new PaginationInfo(
+                pageNumber,
+                pageSize,
+                studentPage.getTotalElements(),
+                studentPage.getTotalPages());
+
+        return new PaginationDto<StudentDto>(studentDtos, paginationInfo);
+    }
+
 }

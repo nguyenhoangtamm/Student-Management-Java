@@ -1,4 +1,4 @@
-package com.tam.StudentManagement.Dto;
+package com.tam.StudentManagement.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

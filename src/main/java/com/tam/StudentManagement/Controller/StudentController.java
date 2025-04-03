@@ -1,9 +1,14 @@
 package com.tam.StudentManagement.Controller;
 
 import com.tam.StudentManagement.Dto.Student.StudentDto;
+import com.tam.StudentManagement.Dto.Student.StudentPaginationResponse;
+import com.tam.StudentManagement.Dto.Student.StudentDashboardDto;
+import com.tam.StudentManagement.Dto.Common.PaginationDto;
+import com.tam.StudentManagement.Dto.Student.CreateStudentDto;
 import com.tam.StudentManagement.Model.Student;
 import com.tam.StudentManagement.Request.Student.CreateStudentRequest;
 import com.tam.StudentManagement.Request.Student.UpdateStudentRequest;
+import com.tam.StudentManagement.Response.ApiResponse;
 import com.tam.StudentManagement.Service.Interface.IStudentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,39 +26,52 @@ public class StudentController {
 
     // Lấy danh sách sinh viên
     @GetMapping
-    public ResponseEntity<List<Student>> getAllStudents() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+    public ResponseEntity<ApiResponse<List<Student>>> getAllStudents() {
+        List<Student> students = studentService.getAllStudents();
+        return ResponseEntity.ok(ApiResponse.success("Get students successfully", students));
     }
-    @GetMapping("/{id}/major")
-    public ResponseEntity<String> getMajorByStudentId(@PathVariable Integer id) {
-        return ResponseEntity.ok(studentService.getMajorByStudentId(id));
-    }
+
     // Lấy thông tin sinh viên theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable Integer id) {
-        return studentService.getStudentById(id).map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<ApiResponse<Student>> getStudentById(@PathVariable Integer id) {
+        return studentService.getStudentById(id)
+                .map(student -> ResponseEntity.ok(ApiResponse.success("Get student successfully", student)))
+                .orElseGet(() -> ResponseEntity.ok(ApiResponse.error("Student not found")));
     }
 
     // Thêm mới sinh viên
     @PostMapping
-    public ResponseEntity<StudentDto> createStudent(@Valid @RequestBody CreateStudentRequest student) {
-        return ResponseEntity.ok(studentService.createStudent(student));
+    public ResponseEntity<ApiResponse<CreateStudentDto>> createStudent(
+            @Valid @RequestBody CreateStudentRequest student) {
+        CreateStudentDto createdStudent = studentService.createStudent(student);
+        return ResponseEntity.ok(ApiResponse.success("Create student successfully", createdStudent));
     }
 
     // Cập nhật thông tin sinh viên
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable Integer id,
+    public ResponseEntity<ApiResponse<Student>> updateStudent(@PathVariable Integer id,
             @Valid @RequestBody UpdateStudentRequest studentDetails) {
-        return ResponseEntity.ok(studentService.updateStudent(id, studentDetails));
-
+        Student updatedStudent = studentService.updateStudent(id, studentDetails);
+        return ResponseEntity.ok(ApiResponse.success("Update student successfully", updatedStudent));
     }
 
     // Xóa sinh viên (đánh dấu isDelete thay vì xóa thật sự)
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable Integer id) {
-        return ResponseEntity.ok(studentService.deleteStudent(id));
-
+    public ResponseEntity<ApiResponse<String>> deleteStudent(@PathVariable Integer id) {
+        String message = studentService.deleteStudent(id);
+        return ResponseEntity.ok(ApiResponse.success("Delete student successfully", message));
     }
 
+    @GetMapping("/dashboard")
+    public ResponseEntity<ApiResponse<StudentDashboardDto>> getDashboard() {
+        StudentDashboardDto data = studentService.getDashboard();
+        return ResponseEntity.ok(ApiResponse.success("Get dashboard successfully", data));
+    }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<ApiResponse<PaginationDto<StudentDto>>> getStudentsByPagination(@RequestParam int pageNumber,
+            @RequestParam int pageSize, @RequestParam String keyword) {
+        PaginationDto<StudentDto> data = studentService.getStudentsByPagination(pageNumber, pageSize, keyword);
+        return ResponseEntity.ok(ApiResponse.success("Get students by pagination successfully", data));
+    }
 }
