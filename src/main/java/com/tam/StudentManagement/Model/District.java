@@ -26,6 +26,9 @@ public class District extends BaseModel {
     @Column(length = 255)
     private String name;
 
+    @Column(name = "type")
+    private Integer type;
+
     @ManyToOne
     @JoinColumn(name = "province_id")
     @JsonIgnore
