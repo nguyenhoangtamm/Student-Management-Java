@@ -25,6 +25,9 @@ public class Ward extends BaseModel {
     @Column(length = 255)
     private String name;
 
+    @Column(name = "type")
+    private Integer type;
+
     @ManyToOne
     @JoinColumn(name = "district_id")
     @JsonIgnore
