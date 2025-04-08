@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,6 +44,8 @@ public class StudentService implements IStudentService {
 
     @Autowired
     private ProvinceRepository provinceRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<Student> getAllStudents() {
@@ -71,7 +74,7 @@ public class StudentService implements IStudentService {
 
         Student entity = new Student();
         entity.setCode(request.getCode());
-        entity.setPassword(request.getPassword());
+        entity.setPassword(passwordEncoder.encode(request.getPassword()));
         entity.setFullName(request.getFullName());
         entity.setGender(request.getGender());
         entity.setDateOfBirth(request.getDateOfBirth());
@@ -163,7 +166,7 @@ public class StudentService implements IStudentService {
                 student.setCode(studentDetails.getCode());
             }
             if (studentDetails.getPassword() != null) {
-                student.setPassword(studentDetails.getPassword());
+                student.setPassword(passwordEncoder.encode(studentDetails.getPassword()));
             }
             if (studentDetails.getGender() != null) {
                 student.setGender(studentDetails.getGender());

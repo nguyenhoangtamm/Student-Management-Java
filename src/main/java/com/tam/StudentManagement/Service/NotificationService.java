@@ -86,41 +86,41 @@ public class NotificationService implements INotificationService {
         return "Notification deleted successfully";
     }
 
-    @Override
-    public PaginationDto<NotificationDto> getNotificationsByPagination(int pageNumber, int pageSize, String keyword) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        Page<Notification> notificationPage;
+    // @Override
+    // public PaginationDto<NotificationDto> getNotificationsByPagination(int pageNumber, int pageSize, String keyword) {
+    //     Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+    //     Page<Notification> notificationPage;
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            notificationPage = notificationRepository.findByTitleContainingOrContentContaining(keyword, keyword,
-                    pageable);
-        } else {
-            notificationPage = notificationRepository.findAll(pageable);
-        }
+    //     if (keyword != null && !keyword.trim().isEmpty()) {
+    //         notificationPage = notificationRepository.findByTitleContainingOrContentContaining(keyword, keyword,
+    //                 pageable);
+    //     } else {
+    //         notificationPage = notificationRepository.findAll(pageable);
+    //     }
 
-        List<NotificationDto> notificationDtos = notificationPage.getContent().stream()
-                .map(NotificationDto::new)
-                .collect(Collectors.toList());
+    //     List<NotificationDto> notificationDtos = notificationPage.getContent().stream()
+    //             .map(NotificationDto::new)
+    //             .collect(Collectors.toList());
 
-        PaginationInfo paginationInfo = new PaginationInfo(
-                pageNumber,
-                pageSize,
-                notificationPage.getTotalElements(),
-                notificationPage.getTotalPages());
+    //     PaginationInfo paginationInfo = new PaginationInfo(
+    //             pageNumber,
+    //             pageSize,
+    //             notificationPage.getTotalElements(),
+    //             notificationPage.getTotalPages());
 
-        return new PaginationDto<>(notificationDtos, paginationInfo);
-    }
+    //     return new PaginationDto<>(notificationDtos, paginationInfo);
+    // }
 
-    @Override
-    public List<Notification> getUnreadNotificationsByStudentId(Integer studentId) {
-        return notificationRepository.findByStudentIdAndIsReadFalse(studentId);
-    }
+    // @Override
+    // public List<Notification> getUnreadNotificationsByStudentId(Integer studentId) {
+    //     return notificationRepository.findByStudentIdAndIsReadFalse(studentId);
+    // }
 
-    @Override
-    public String markNotificationAsRead(Integer id) {
-        return notificationRepository.findById(id).map(notification -> {
-            notificationRepository.save(notification);
-            return "Notification marked as read successfully";
-        }).orElseThrow(() -> new NotFoundException("Notification not found"));
-    }
+    // @Override
+    // public String markNotificationAsRead(Integer id) {
+    //     return notificationRepository.findById(id).map(notification -> {
+    //         notificationRepository.save(notification);
+    //         return "Notification marked as read successfully";
+    //     }).orElseThrow(() -> new NotFoundException("Notification not found"));
+    // }
 }

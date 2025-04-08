@@ -56,26 +56,26 @@ public class NotificationController {
         return ResponseEntity.ok(ApiResponse.success("Delete notification successfully", message));
     }
 
-    @GetMapping("/pagination")
-    public ResponseEntity<ApiResponse<PaginationDto<NotificationDto>>> getNotificationsByPagination(
-            @RequestParam(defaultValue = "1") int pageNumber,
-            @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(required = false) String keyword) {
-        PaginationDto<NotificationDto> data = notificationService.getNotificationsByPagination(pageNumber, pageSize,
-                keyword);
-        return ResponseEntity.ok(ApiResponse.success("Get notifications by pagination successfully", data));
-    }
+    // @GetMapping("/pagination")
+    // public ResponseEntity<ApiResponse<PaginationDto<NotificationDto>>> getNotificationsByPagination(
+    //         @RequestParam(defaultValue = "1") int pageNumber,
+    //         @RequestParam(defaultValue = "10") int pageSize,
+    //         @RequestParam(required = false) String keyword) {
+    //     PaginationDto<NotificationDto> data = notificationService.getNotificationsByPagination(pageNumber, pageSize,
+    //             keyword);
+    //     return ResponseEntity.ok(ApiResponse.success("Get notifications by pagination successfully", data));
+    // }
 
-    @GetMapping("/student/{studentId}/unread")
-    public ResponseEntity<ApiResponse<List<Notification>>> getUnreadNotificationsByStudentId(
-            @PathVariable Integer studentId) {
-        List<Notification> notifications = notificationService.getUnreadNotificationsByStudentId(studentId);
-        return ResponseEntity.ok(ApiResponse.success("Get unread notifications successfully", notifications));
-    }
+    // @GetMapping("/student/{studentId}/unread")
+    // public ResponseEntity<ApiResponse<List<Notification>>> getUnreadNotificationsByStudentId(
+    //         @PathVariable Integer studentId) {
+    //     List<Notification> notifications = notificationService.getUnreadNotificationsByStudentId(studentId);
+    //     return ResponseEntity.ok(ApiResponse.success("Get unread notifications successfully", notifications));
+    // }
 
-    @PutMapping("/{id}/read")
-    public ResponseEntity<ApiResponse<String>> markNotificationAsRead(@PathVariable Integer id) {
-        String message = notificationService.markNotificationAsRead(id);
-        return ResponseEntity.ok(ApiResponse.success("Mark notification as read successfully", message));
-    }
+    // @PutMapping("/{id}/read")
+    // public ResponseEntity<ApiResponse<String>> markNotificationAsRead(@PathVariable Integer id) {
+    //     String message = notificationService.markNotificationAsRead(id);
+    //     return ResponseEntity.ok(ApiResponse.success("Mark notification as read successfully", message));
+    // }
 }
