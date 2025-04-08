@@ -1,6 +1,8 @@
 package com.tam.StudentManagement.Service;
 
 import com.tam.StudentManagement.Dto.Student.StudentDto;
+import com.tam.StudentManagement.Dto.Student.StudentHeaderInfoDto;
+import com.tam.StudentManagement.Dto.Notification.NotificationDto;
 import com.tam.StudentManagement.Exception.DuplicateException;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Common.PaginationInfo;
@@ -10,11 +12,16 @@ import com.tam.StudentManagement.Model.*;
 import com.tam.StudentManagement.Repository.*;
 import com.tam.StudentManagement.Request.Student.CreateStudentRequest;
 import com.tam.StudentManagement.Request.Student.UpdateStudentRequest;
+import com.tam.StudentManagement.Security.StudentDetails;
 import com.tam.StudentManagement.Service.Interface.IStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+// Removed incorrect CouchbaseProperties.Authentication import
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -251,9 +258,13 @@ public class StudentService implements IStudentService {
 
     @Override
     public StudentDashboardDto getDashboard() {
-        // TODO: Replace with actual student data from authentication
-        Student student = studentRepository.findAll().get(0); // Temporary: Get first student for testing
-
+        Student student = new Student();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof StudentDetails) {
+            StudentDetails studentDetails = (StudentDetails) authentication.getPrincipal();
+            student = studentDetails.getStudent();
+        }
         StudentDashboardDto.OffCampusInfo offCampusInfo = new StudentDashboardDto.OffCampusInfo(
                 student.getDormitory() != null ? student.getDormitory().getName() : "KTX Đại học Đồng Tháp",
                 student.getContractStatus() != null && student.getContractStatus() == 1 ? "Đã ký hợp đồng"
@@ -302,5 +313,12 @@ public class StudentService implements IStudentService {
 
         return new PaginationDto<StudentDto>(studentDtos, paginationInfo);
     }
+
+    // @Override
+    // public StudentHeaderInfoDto getHeaderInfo() {
+    // Student student = studentRepository.findAll().get(0);
+    // return new StudentHeaderInfoDto(student.getFullName(), student.getAvatar(),
+    // new NotificationDto(student.getNotifications()));
+    // }
 
 }
