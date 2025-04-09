@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 public class StudentDashboardDto {
     private String code;
     private String fullName;
-    private Short gender;
+    private String gender;
     private String dateOfBirth;
     private String birthplace;
     private String faculty;

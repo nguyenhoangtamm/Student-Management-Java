@@ -3,6 +3,7 @@ package com.tam.StudentManagement.Service;
 import com.tam.StudentManagement.Dto.Student.StudentDto;
 import com.tam.StudentManagement.Dto.Student.StudentHeaderInfoDto;
 import com.tam.StudentManagement.Dto.Student.StudentNotificationDto;
+import com.tam.StudentManagement.Enum.Student.GenderEnum;
 import com.tam.StudentManagement.Dto.Notification.NotificationDto;
 import com.tam.StudentManagement.Exception.DuplicateException;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
@@ -274,11 +275,12 @@ public class StudentService implements IStudentService {
                 "2025-03-09T15:00:50.000000Z",
                 student.getRoom(),
                 student.getFullAddress());
+        GenderEnum gender = GenderEnum.fromValue(student.getGender());
 
         return new StudentDashboardDto(
                 student.getCode(),
                 student.getFullName(),
-                student.getGender(),
+                gender.getLabel(),
                 student.getDateOfBirth().toString(),
                 student.getBirthplace(),
                 student.getFaculty(),
@@ -323,29 +325,26 @@ public class StudentService implements IStudentService {
                 && authentication.getPrincipal() instanceof StudentDetails) {
             StudentDetails studentDetails = (StudentDetails) authentication.getPrincipal();
             Integer studentId = studentDetails.getStudent().getId();
-    
+
             // 🔥 Lấy lại từ DB để đảm bảo fetch được notifications
             Student student = studentRepository.findById(studentId)
-                                               .orElseThrow(() -> new RuntimeException("Student not found"));
-    
+                    .orElseThrow(() -> new RuntimeException("Student not found"));
+
             List<StudentNotificationDto> notificationDtos = new ArrayList<>();
             for (StudentNotification studentNotification : student.getStudentNotifications()) {
                 Notification notification = studentNotification.getNotification();
                 notificationDtos.add(new StudentNotificationDto(
                         notification.getId(),
                         notification.getTitle(),
-                        notification.getContent(),
-                        notification.getType(),
-                        notification.getCreatedAt(),
-                        studentNotification.isRead(),
+                        
                         notification.getSlug()));
             }
-    
+
             return new StudentHeaderInfoDto(student.getFullName(), student.getAvatar(), notificationDtos);
         }
-    
+
         // Trường hợp không đăng nhập hoặc lỗi xác thực
         return new StudentHeaderInfoDto(null, null, new ArrayList<>());
     }
-    
+
 }

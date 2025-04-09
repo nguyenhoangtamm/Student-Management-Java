@@ -14,5 +14,5 @@ public class StudentHeaderInfoDto {
 
     private String fullName;
     private String avatar;
-    private List<StudentNotificationDto> notification;
+    private List<StudentNotificationDto> notifications;
 }

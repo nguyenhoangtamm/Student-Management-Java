@@ -3,6 +3,8 @@ package com.tam.StudentManagement.Controller;
 import com.tam.StudentManagement.Dto.Auth.JwtAuthResponse;
 import com.tam.StudentManagement.Dto.Auth.LoginDto;
 import com.tam.StudentManagement.Service.AuthService;
+
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +21,12 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponse> authenticateUser(@Valid @RequestBody LoginDto loginDto) {
-        JwtAuthResponse response = authService.login(loginDto);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<JwtAuthResponse> authenticateUser(
+            @Valid @RequestBody LoginDto loginDto,
+            HttpServletResponse response) {
+
+        JwtAuthResponse authResponse = authService.login(loginDto, response);
+        return ResponseEntity.ok(authResponse);
     }
+
 }

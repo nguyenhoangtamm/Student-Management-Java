@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 public class StudentNotificationDto {
     private Integer id;
     private String title;
-    private String content;
-    private Integer type;
-    private LocalDateTime createdAt;
-    private Boolean isRead;
+    // private String content;
+    // private Integer type;
+    // private LocalDateTime createdAt;
+    // private Boolean isRead;
     private String slug;
     
 }
