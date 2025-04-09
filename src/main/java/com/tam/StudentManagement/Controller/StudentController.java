@@ -81,46 +81,54 @@ public class StudentController {
         return ResponseEntity.ok(ApiResponse.success("Get students by pagination successfully", data));
     }
 
-    // @GetMapping("/header-info")
-    // public ResponseEntity<ApiResponse<StudentHeaderInfoDto>> getHeaderInfo() {
-    //     StudentHeaderInfoDto headerInfo = studentService.getHeaderInfo();
-    //     return ResponseEntity.ok(ApiResponse.success("Get header info successfully", headerInfo));
-    // }
+    @GetMapping("/header-info")
+    public ResponseEntity<ApiResponse<StudentHeaderInfoDto>> getHeaderInfo() {
+        StudentHeaderInfoDto headerInfo = studentService.getHeaderInfo();
+        return ResponseEntity.ok(ApiResponse.success("Get header info successfully", headerInfo));
+    }
 
     // @GetMapping("/profile")
     // public ResponseEntity<ApiResponse<StudentProfileDto>> getProfile() {
-    //     StudentProfileDto profile = studentService.getProfile();
-    //     return ResponseEntity.ok(ApiResponse.success("Get profile successfully", profile));
+    // StudentProfileDto profile = studentService.getProfile();
+    // return ResponseEntity.ok(ApiResponse.success("Get profile successfully",
+    // profile));
     // }
 
     // @GetMapping("/contract")
     // public ResponseEntity<ApiResponse<StudentContractDto>> getContract() {
-    //     StudentContractDto contract = studentService.getContract();
-    //     return ResponseEntity.ok(ApiResponse.success("Get contract successfully", contract));
+    // StudentContractDto contract = studentService.getContract();
+    // return ResponseEntity.ok(ApiResponse.success("Get contract successfully",
+    // contract));
     // }
 
     // @PutMapping("/off-campus")
     // public ResponseEntity<ApiResponse<StudentStatusDto>> updateOffCampus(
-    //         @Valid @RequestBody UpdateOffCampusRequest request) {
-    //     StudentStatusDto result = studentService.updateOffCampus(request);
-    //     return ResponseEntity.ok(ApiResponse.success("Update off campus successfully", result));
+    // @Valid @RequestBody UpdateOffCampusRequest request) {
+    // StudentStatusDto result = studentService.updateOffCampus(request);
+    // return ResponseEntity.ok(ApiResponse.success("Update off campus
+    // successfully", result));
     // }
 
     // @GetMapping("/status")
     // public ResponseEntity<ApiResponse<StudentStatusDto>> getStatus() {
-    //     StudentStatusDto status = studentService.getStatus();
-    //     return ResponseEntity.ok(ApiResponse.success("Get status successfully", status));
+    // StudentStatusDto status = studentService.getStatus();
+    // return ResponseEntity.ok(ApiResponse.success("Get status successfully",
+    // status));
     // }
 
     // @GetMapping("/statistics")
     // public ResponseEntity<ApiResponse<StudentStatisticsDto>> getStatistics() {
-    //     StudentStatisticsDto statistics = studentService.getStatistics();
-    //     return ResponseEntity.ok(ApiResponse.success("Get statistics successfully", statistics));
+    // StudentStatisticsDto statistics = studentService.getStatistics();
+    // return ResponseEntity.ok(ApiResponse.success("Get statistics successfully",
+    // statistics));
     // }
 
     // @GetMapping("/notifications")
-    // public ResponseEntity<ApiResponse<List<StudentNotificationDto>>> getStudentNotifications() {
-    //     List<StudentNotificationDto> notifications = studentService.getStudentNotifications();
-    //     return ResponseEntity.ok(ApiResponse.success("Get student notifications successfully", notifications));
+    // public ResponseEntity<ApiResponse<List<StudentNotificationDto>>>
+    // getStudentNotifications() {
+    // List<StudentNotificationDto> notifications =
+    // studentService.getStudentNotifications();
+    // return ResponseEntity.ok(ApiResponse.success("Get student notifications
+    // successfully", notifications));
     // }
 }

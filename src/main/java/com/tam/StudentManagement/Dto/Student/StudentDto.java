@@ -2,7 +2,6 @@ package com.tam.StudentManagement.Dto.Student;
 
 import com.tam.StudentManagement.Model.Student;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;

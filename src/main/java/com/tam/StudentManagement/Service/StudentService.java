@@ -2,6 +2,7 @@ package com.tam.StudentManagement.Service;
 
 import com.tam.StudentManagement.Dto.Student.StudentDto;
 import com.tam.StudentManagement.Dto.Student.StudentHeaderInfoDto;
+import com.tam.StudentManagement.Dto.Student.StudentNotificationDto;
 import com.tam.StudentManagement.Dto.Notification.NotificationDto;
 import com.tam.StudentManagement.Exception.DuplicateException;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
@@ -25,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -314,11 +316,36 @@ public class StudentService implements IStudentService {
         return new PaginationDto<StudentDto>(studentDtos, paginationInfo);
     }
 
-    // @Override
-    // public StudentHeaderInfoDto getHeaderInfo() {
-    // Student student = studentRepository.findAll().get(0);
-    // return new StudentHeaderInfoDto(student.getFullName(), student.getAvatar(),
-    // new NotificationDto(student.getNotifications()));
-    // }
-
+    @Override
+    public StudentHeaderInfoDto getHeaderInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof StudentDetails) {
+            StudentDetails studentDetails = (StudentDetails) authentication.getPrincipal();
+            Integer studentId = studentDetails.getStudent().getId();
+    
+            // 🔥 Lấy lại từ DB để đảm bảo fetch được notifications
+            Student student = studentRepository.findById(studentId)
+                                               .orElseThrow(() -> new RuntimeException("Student not found"));
+    
+            List<StudentNotificationDto> notificationDtos = new ArrayList<>();
+            for (StudentNotification studentNotification : student.getStudentNotifications()) {
+                Notification notification = studentNotification.getNotification();
+                notificationDtos.add(new StudentNotificationDto(
+                        notification.getId(),
+                        notification.getTitle(),
+                        notification.getContent(),
+                        notification.getType(),
+                        notification.getCreatedAt(),
+                        studentNotification.isRead(),
+                        notification.getSlug()));
+            }
+    
+            return new StudentHeaderInfoDto(student.getFullName(), student.getAvatar(), notificationDtos);
+        }
+    
+        // Trường hợp không đăng nhập hoặc lỗi xác thực
+        return new StudentHeaderInfoDto(null, null, new ArrayList<>());
+    }
+    
 }

@@ -19,8 +19,8 @@ public class Notification {
 
     private String title;
     private String content;
-    private int type;
-    private int views;
+    private Integer type;
+    private Integer views;
     private String slug;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

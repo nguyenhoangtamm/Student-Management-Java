@@ -34,7 +34,7 @@ public interface IStudentService {
 
     PaginationDto<StudentDto> getStudentsByPagination(int page, int size, String keyword);
 
-    // StudentHeaderInfoDto getHeaderInfo();
+    StudentHeaderInfoDto getHeaderInfo();
 
     // StudentProfileDto getProfile();
 
