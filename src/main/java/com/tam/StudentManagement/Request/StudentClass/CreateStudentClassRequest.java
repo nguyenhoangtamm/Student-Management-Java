@@ -12,5 +12,5 @@ public class CreateStudentClassRequest {
 
     @NotBlank(message = "Name is required")
     @Size(max = 255, message = "Name must not exceed 255 characters")
-    private String fullName;
+    private String name;
 }

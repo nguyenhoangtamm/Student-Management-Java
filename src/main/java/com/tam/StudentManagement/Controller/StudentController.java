@@ -74,9 +74,10 @@ public class StudentController {
         return ResponseEntity.ok(ApiResponse.success("Get dashboard successfully", data));
     }
 
-    @GetMapping("/pagination")
-    public ResponseEntity<ApiResponse<PaginationDto<StudentDto>>> getStudentsByPagination(@RequestParam int pageNumber,
-            @RequestParam int pageSize, @RequestParam String keyword) {
+    @GetMapping("/get-paging")
+    public ResponseEntity<ApiResponse<PaginationDto<StudentDto>>> getStudentsByPagination(
+            @RequestParam int pageNumber, @RequestParam int pageSize, 
+            @RequestParam(required = false) String keyword) {
         PaginationDto<StudentDto> data = studentService.getStudentsByPagination(pageNumber, pageSize, keyword);
         return ResponseEntity.ok(ApiResponse.success("Get students by pagination successfully", data));
     }
@@ -87,12 +88,12 @@ public class StudentController {
         return ResponseEntity.ok(ApiResponse.success("Get header info successfully", headerInfo));
     }
 
-    // @GetMapping("/profile")
-    // public ResponseEntity<ApiResponse<StudentProfileDto>> getProfile() {
-    // StudentProfileDto profile = studentService.getProfile();
-    // return ResponseEntity.ok(ApiResponse.success("Get profile successfully",
-    // profile));
-    // }
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse<StudentProfileDto>> getProfile() {
+    StudentProfileDto profile = studentService.getProfile();
+    return ResponseEntity.ok(ApiResponse.success("Get profile successfully",
+    profile));
+    }
 
     // @GetMapping("/contract")
     // public ResponseEntity<ApiResponse<StudentContractDto>> getContract() {

@@ -15,7 +15,7 @@ public class StudentDto {
     private Integer id;
     private String code;
     private String fullName;
-    private Short gender;
+    private Integer gender;
     private LocalDate dateOfBirth;
     private String email;
     private String phoneNumber;

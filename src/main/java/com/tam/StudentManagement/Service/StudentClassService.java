@@ -45,7 +45,7 @@ public class StudentClassService implements IStudentClassService {
 
         StudentClass entity = new StudentClass();
         entity.setCode(request.getCode());
-        entity.setFullName(request.getFullName());
+        entity.setName(request.getName());
         entity.setTotalStudent(0);
 
         studentClassRepository.save(entity);
@@ -65,8 +65,8 @@ public class StudentClassService implements IStudentClassService {
                 studentClass.setCode(request.getCode());
             }
 
-            if (request.getFullName() != null) {
-                studentClass.setFullName(request.getFullName());
+            if (request.getName() != null) {
+                studentClass.setName(request.getName());
             }
 
             return studentClassRepository.save(studentClass);
@@ -87,7 +87,7 @@ public class StudentClassService implements IStudentClassService {
         Page<StudentClass> studentClassPage;
 
         if (keyword != null && !keyword.trim().isEmpty()) {
-            studentClassPage = studentClassRepository.findByCodeContainingOrFullNameContaining(keyword, keyword,
+            studentClassPage = studentClassRepository.findByCodeContainingOrNameContaining(keyword, keyword,
                     pageable);
         } else {
             studentClassPage = studentClassRepository.findAll(pageable);

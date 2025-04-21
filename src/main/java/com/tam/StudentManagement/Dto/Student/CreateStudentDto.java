@@ -3,7 +3,9 @@ package com.tam.StudentManagement.Dto.Student;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+
 import java.math.BigDecimal;
+
 import com.tam.StudentManagement.Model.Student;
 
 @Data
@@ -13,26 +15,27 @@ public class CreateStudentDto {
     private Integer id;
     private String code;
     private String fullName;
-    private Short gender;
+    private Integer gender;
     private String dateOfBirth;
     private String faculty;
     private String room;
     private String phoneNumber;
     private String email;
-    private Short educationLevel;
+    private Integer educationLevel;
     private Integer residenceStatus;
     private String academicYear;
     private String birthplace;
-    private Short status;
+    private Integer status;
     private Boolean isAdmin;
     private String avatar;
     private BigDecimal monthlyRent;
-    private Short contractStatus;
+    private Integer contractStatus;
     private String address;
     private String fullAddress;
     private Integer dormitoryId;
     private Integer classId;
     private Integer majorId;
+    
 
     public CreateStudentDto(Student entity) {
         this.id = entity.getId();

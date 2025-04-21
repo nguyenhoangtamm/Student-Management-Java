@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
+
 @Entity
 @Table(name = "students")
 @Data
@@ -23,7 +24,7 @@ public class Student extends BaseModel {
 
     @Column(nullable = false, unique = true, length = 30)
     private String code;
-
+    @JsonIgnore
     @Column(nullable = false, length = 255)
     private String password;
 
@@ -31,7 +32,7 @@ public class Student extends BaseModel {
     private String fullName;
 
     @Column(nullable = false)
-    private Short gender;
+    private Integer gender;
 
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
@@ -58,10 +59,12 @@ public class Student extends BaseModel {
     private String email;
 
     @Column(name = "education_level")
-    private Short educationLevel;
+    private Integer educationLevel;
 
     @Column(name = "residence_status", nullable = false)
     private Integer residenceStatus = 1;
+    @Column(name = "education_type", nullable = false)
+    private Integer educationType = 1;
 
     @Column(name = "academic_year", nullable = false, length = 30)
     private String academicYear = "2025";
@@ -70,7 +73,7 @@ public class Student extends BaseModel {
     private String birthplace;
 
     @Column(nullable = false)
-    private Short status = 0;
+    private Integer status = 0;
 
     @Column(name = "isadmin", nullable = false)
     private Boolean isAdmin = false;
@@ -81,7 +84,7 @@ public class Student extends BaseModel {
     private BigDecimal monthlyRent;
 
     @Column(name = "contract_status")
-    private Short contractStatus;
+    private Integer contractStatus;
 
     private String address;
 
@@ -130,7 +133,7 @@ public class Student extends BaseModel {
     @JoinColumn(name = "province_id")
     @JsonIgnore
     private Province province;
-    
+
     @OneToMany(mappedBy = "student")
     @JsonIgnore
     private List<Review> reviews;

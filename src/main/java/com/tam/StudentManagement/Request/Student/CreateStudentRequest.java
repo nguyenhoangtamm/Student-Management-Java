@@ -2,7 +2,6 @@ package com.tam.StudentManagement.Request.Student;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import org.hibernate.annotations.Type;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,7 +24,7 @@ public class CreateStudentRequest {
     @Min(value = 0, message = "Giới tính chỉ được nhập 0 hoặc 1")
     @Max(value = 1, message = "Giới tính chỉ được nhập 0 hoặc 1")
 
-    private Short gender;
+    private Integer gender;
 
     @NotNull(message = "Ngày sinh không được để trống")
     private LocalDate dateOfBirth;
@@ -50,7 +49,7 @@ public class CreateStudentRequest {
     @NotBlank(message = "Email không được để trống")
     private String email;
 
-    private Short educationLevel;
+    private Integer educationLevel;
 
     private Integer residenceStatus = 1;
 
@@ -60,7 +59,7 @@ public class CreateStudentRequest {
     @NotBlank(message = "Nơi sinh không được để trống")
     private String birthplace;
 
-    private Short status = 0;
+    private Integer status = 0;
 
     private Boolean isAdmin = false;
 
@@ -68,7 +67,7 @@ public class CreateStudentRequest {
 
     private BigDecimal monthlyRent;
 
-    private Short contractStatus;
+    private Integer contractStatus;
 
     private String address;
 

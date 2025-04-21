@@ -3,12 +3,15 @@ package com.tam.StudentManagement.Service;
 import com.tam.StudentManagement.Dto.Student.StudentDto;
 import com.tam.StudentManagement.Dto.Student.StudentHeaderInfoDto;
 import com.tam.StudentManagement.Dto.Student.StudentNotificationDto;
+import com.tam.StudentManagement.Dto.Student.StudentProfileDto;
+import com.tam.StudentManagement.Dto.Student.StudentServiceDto;
 import com.tam.StudentManagement.Enum.Student.GenderEnum;
 import com.tam.StudentManagement.Dto.Notification.NotificationDto;
 import com.tam.StudentManagement.Exception.DuplicateException;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Common.PaginationInfo;
 import com.tam.StudentManagement.Dto.Student.CreateStudentDto;
+import com.tam.StudentManagement.Dto.Student.OffCampusDto;
 import com.tam.StudentManagement.Dto.Student.StudentDashboardDto;
 import com.tam.StudentManagement.Model.*;
 import com.tam.StudentManagement.Repository.*;
@@ -326,7 +329,7 @@ public class StudentService implements IStudentService {
             StudentDetails studentDetails = (StudentDetails) authentication.getPrincipal();
             Integer studentId = studentDetails.getStudent().getId();
 
-            // 🔥 Lấy lại từ DB để đảm bảo fetch được notifications
+            // Lấy lại từ DB để đảm bảo fetch được notifications
             Student student = studentRepository.findById(studentId)
                     .orElseThrow(() -> new RuntimeException("Student not found"));
 
@@ -336,7 +339,7 @@ public class StudentService implements IStudentService {
                 notificationDtos.add(new StudentNotificationDto(
                         notification.getId(),
                         notification.getTitle(),
-                        
+
                         notification.getSlug()));
             }
 
@@ -347,4 +350,56 @@ public class StudentService implements IStudentService {
         return new StudentHeaderInfoDto(null, null, new ArrayList<>());
     }
 
+    public StudentProfileDto getProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof StudentDetails) {
+            StudentDetails studentDetails = (StudentDetails) authentication.getPrincipal();
+            Student student = studentRepository.findById(studentDetails.getStudent().getId())
+                    .orElseThrow(() -> new RuntimeException("Student not found"));
+
+            List<StudentServiceDto> studentServiceDto = student.getDormitory() != null
+                    ? student.getDormitory().getDormitoryServices().stream()
+                            .map(studentService -> new StudentServiceDto(
+                                    studentService.getService().getName(),
+                                    studentService.getFee(),
+                                    studentService.getService().getUnit()))
+                            .collect(Collectors.toList())
+                    : new ArrayList<>();
+
+            OffCampusDto offCampusDto = new OffCampusDto(
+                    student.getDormitory() != null ? student.getDormitory().getName() : null,
+                    student.getDormitory() != null ? student.getDormitory().getAddress() : null,
+                    student.getDormitory() != null ? student.getDormitory().getOwnerName() : null,
+                    student.getDormitory() != null ? student.getDormitory().getPhoneNumber() : null,
+                    student.getContractStatus() != null && student.getContractStatus() == 1 ? "Đã ký hợp đồng"
+                            : "Chưa ký hợp đồng",
+                    student.getRoom(),
+                    student.getMonthlyRent().toString(),
+                    studentServiceDto);
+
+            return new StudentProfileDto(
+                    student.getCode(),
+                    student.getFullName(),
+                    student.getGender().toString(),
+                    student.getAvatar(),
+                    student.getStatus().toString(),
+                    student.getStudentClass() != null ? student.getStudentClass().getName() : "",
+                    student.getEducationLevel().toString(),
+                    student.getFaculty(),
+                    student.getMajor() != null ? student.getMajor().getName() : "",
+                    student.getEducationType().toString(),
+                    student.getAcademicYear(),
+                    student.getPhoneNumber(),
+                    student.getFullAddress(),
+                    student.getDateOfBirth().toString(),
+                    student.getBirthplace(),
+                    student.getEmail(),
+                    student.getResidenceStatus().toString(),
+                    offCampusDto
+
+            );
+        }
+        throw new RuntimeException("Authentication failed or user not logged in");
+    }
 }

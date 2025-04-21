@@ -10,5 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface StudentClassRepository extends JpaRepository<StudentClass, Integer> {
     StudentClass findByCode(String code);
 
-    Page<StudentClass> findByCodeContainingOrFullNameContaining(String code, String fullName, Pageable pageable);
+
+    Page<StudentClass> findByCodeContainingOrNameContaining(String code, String name, Pageable pageable);
+
 }

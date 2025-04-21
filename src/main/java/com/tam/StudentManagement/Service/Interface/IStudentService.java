@@ -36,7 +36,7 @@ public interface IStudentService {
 
     StudentHeaderInfoDto getHeaderInfo();
 
-    // StudentProfileDto getProfile();
+    StudentProfileDto getProfile();
 
     // StudentContractDto getContract();
 

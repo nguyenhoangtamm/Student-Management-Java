@@ -14,7 +14,7 @@ public class UpdateStudentClassDto {
     public UpdateStudentClassDto(StudentClass entity) {
         this.id = entity.getId();
         this.code = entity.getCode();
-        this.fullName = entity.getFullName();
+        this.fullName = entity.getName();
         this.totalStudent = entity.getTotalStudent();
     }
 }

@@ -9,5 +9,5 @@ public class UpdateStudentClassRequest {
     private String code;
 
     @Size(max = 255, message = "Name must not exceed 255 characters")
-    private String fullName;
+    private String name;
 }

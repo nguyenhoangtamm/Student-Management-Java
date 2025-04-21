@@ -24,7 +24,7 @@ public class UpdateStudentRequest {
     @Min(value = 0, message = "Giới tính chỉ được nhập 0 hoặc 1")
     @Max(value = 1, message = "Giới tính chỉ được nhập 0 hoặc 1")
 
-    private Short gender;
+    private Integer gender;
 
     private LocalDate dateOfBirth;
 
@@ -46,7 +46,7 @@ public class UpdateStudentRequest {
     @NotBlank(message = "Email không được để trống")
     private String email;
 
-    private Short educationLevel;
+    private Integer educationLevel;
 
     private Integer residenceStatus = 1;
 
@@ -56,7 +56,7 @@ public class UpdateStudentRequest {
     @NotBlank(message = "Nơi sinh không được để trống")
     private String birthplace;
 
-    private Short status = 0;
+    private Integer status = 0;
 
     private Boolean isAdmin = false;
 
@@ -64,7 +64,7 @@ public class UpdateStudentRequest {
 
     private BigDecimal monthlyRent;
 
-    private Short contractStatus;
+    private Integer contractStatus;
 
     private String address;
 

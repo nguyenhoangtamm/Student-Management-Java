@@ -94,4 +94,8 @@ public class Dormitory extends BaseModel {
     @JoinColumn(name = "province_id")
     @JsonIgnore
     private Province province;
+
+    @OneToMany(mappedBy = "dormitory")
+    @JsonIgnore
+    private List<DormitoryService> dormitoryServices;
 }
