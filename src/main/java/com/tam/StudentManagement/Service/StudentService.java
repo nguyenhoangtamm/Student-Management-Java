@@ -372,9 +372,9 @@ public class StudentService implements IStudentService {
                             .collect(Collectors.toList())
                     : new ArrayList<>();
 
-            ContractStatusEnum contractStatus = student.getContractStatus() != null 
-                ? ContractStatusEnum.fromValue(student.getContractStatus())
-                : ContractStatusEnum.CHUA_KY;
+            ContractStatusEnum contractStatus = student.getContractStatus() != null
+                    ? ContractStatusEnum.fromValue(student.getContractStatus())
+                    : ContractStatusEnum.CHUA_KY;
 
             OffCampusDto offCampusDto = new OffCampusDto(
                     student.getDormitory() != null ? student.getDormitory().getName() : null,
@@ -387,9 +387,9 @@ public class StudentService implements IStudentService {
                     studentServiceDto);
             GenderEnum gender = GenderEnum.fromValue(student.getGender());
             StatusEnum status = StatusEnum.fromValue(student.getStatus());
-            EducationLevelEnum educationLevel = student.getEducationLevel() != null 
-                ? EducationLevelEnum.fromValue(student.getEducationLevel())
-                : EducationLevelEnum.DAI_HOC;
+            EducationLevelEnum educationLevel = student.getEducationLevel() != null
+                    ? EducationLevelEnum.fromValue(student.getEducationLevel())
+                    : EducationLevelEnum.DAI_HOC;
             ResidenceStatusEnum residenceStatus = ResidenceStatusEnum.fromValue(student.getResidenceStatus());
             EducationTypeEnum educationType = EducationTypeEnum.fromValue(student.getEducationType());
             return new StudentProfileDto(
