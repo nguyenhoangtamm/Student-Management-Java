@@ -6,6 +6,11 @@ import com.tam.StudentManagement.Dto.Student.StudentNotificationDto;
 import com.tam.StudentManagement.Dto.Student.StudentProfileDto;
 import com.tam.StudentManagement.Dto.Student.StudentServiceDto;
 import com.tam.StudentManagement.Enum.Student.GenderEnum;
+import com.tam.StudentManagement.Enum.Student.StatusEnum;
+import com.tam.StudentManagement.Enum.Student.EducationLevelEnum;
+import com.tam.StudentManagement.Enum.Student.ResidenceStatusEnum;
+import com.tam.StudentManagement.Enum.Student.EducationTypeEnum;
+import com.tam.StudentManagement.Enum.Student.ContractStatusEnum;
 import com.tam.StudentManagement.Dto.Notification.NotificationDto;
 import com.tam.StudentManagement.Exception.DuplicateException;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
@@ -367,35 +372,44 @@ public class StudentService implements IStudentService {
                             .collect(Collectors.toList())
                     : new ArrayList<>();
 
+            ContractStatusEnum contractStatus = student.getContractStatus() != null 
+                ? ContractStatusEnum.fromValue(student.getContractStatus())
+                : ContractStatusEnum.CHUA_KY;
+
             OffCampusDto offCampusDto = new OffCampusDto(
                     student.getDormitory() != null ? student.getDormitory().getName() : null,
                     student.getDormitory() != null ? student.getDormitory().getAddress() : null,
                     student.getDormitory() != null ? student.getDormitory().getOwnerName() : null,
                     student.getDormitory() != null ? student.getDormitory().getPhoneNumber() : null,
-                    student.getContractStatus() != null && student.getContractStatus() == 1 ? "Đã ký hợp đồng"
-                            : "Chưa ký hợp đồng",
+                    contractStatus.getLabel(),
                     student.getRoom(),
-                    student.getMonthlyRent().toString(),
+                    student.getMonthlyRent() != null ? student.getMonthlyRent().toString() : null,
                     studentServiceDto);
-
+            GenderEnum gender = GenderEnum.fromValue(student.getGender());
+            StatusEnum status = StatusEnum.fromValue(student.getStatus());
+            EducationLevelEnum educationLevel = student.getEducationLevel() != null 
+                ? EducationLevelEnum.fromValue(student.getEducationLevel())
+                : EducationLevelEnum.DAI_HOC;
+            ResidenceStatusEnum residenceStatus = ResidenceStatusEnum.fromValue(student.getResidenceStatus());
+            EducationTypeEnum educationType = EducationTypeEnum.fromValue(student.getEducationType());
             return new StudentProfileDto(
                     student.getCode(),
                     student.getFullName(),
-                    student.getGender().toString(),
+                    gender.getLabel().toString(),
                     student.getAvatar(),
-                    student.getStatus().toString(),
+                    status.getLabel(),
                     student.getStudentClass() != null ? student.getStudentClass().getName() : "",
-                    student.getEducationLevel().toString(),
+                    educationLevel.getLabel(),
                     student.getFaculty(),
                     student.getMajor() != null ? student.getMajor().getName() : "",
-                    student.getEducationType().toString(),
+                    educationType.getLabel(),
                     student.getAcademicYear(),
                     student.getPhoneNumber(),
                     student.getFullAddress(),
                     student.getDateOfBirth().toString(),
                     student.getBirthplace(),
                     student.getEmail(),
-                    student.getResidenceStatus().toString(),
+                    residenceStatus.getLabel(),
                     offCampusDto
 
             );
