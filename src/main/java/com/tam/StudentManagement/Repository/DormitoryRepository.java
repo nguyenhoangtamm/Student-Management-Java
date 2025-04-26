@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DormitoryRepository extends JpaRepository<Dormitory, Integer> {
     Dormitory findByName(String name);
-
+    Dormitory findBySlugAndIdNot(String slug, Integer id);
     Dormitory findBySlug(String slug);
 
     Page<Dormitory> findByNameContainingOrAddressContainingOrDescriptionContaining(

@@ -1,6 +1,8 @@
 package com.tam.StudentManagement.Service;
 
 import com.tam.StudentManagement.Dto.Dormitory.DormitoryDto;
+import com.tam.StudentManagement.Dto.Dormitory.DormitoryReviewDto;
+import com.tam.StudentManagement.Dto.Dormitory.GetDormitoryBySlug;
 import com.tam.StudentManagement.Dto.Dormitory.CreateDormitoryDto;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Common.PaginationInfo;
@@ -9,6 +11,7 @@ import com.tam.StudentManagement.Model.Dormitory;
 import com.tam.StudentManagement.Model.Ward;
 import com.tam.StudentManagement.Model.District;
 import com.tam.StudentManagement.Model.Province;
+import com.tam.StudentManagement.Model.Review;
 import com.tam.StudentManagement.Repository.DormitoryRepository;
 import com.tam.StudentManagement.Repository.WardRepository;
 import com.tam.StudentManagement.Repository.DistrictRepository;
@@ -209,5 +212,25 @@ public class DormitoryService implements IDormitoryService {
                 dormitoryPage.getTotalPages());
 
         return new PaginationDto<DormitoryDto>(dormitoryDtos, paginationInfo);
+    }
+    public GetDormitoryBySlug getDormitoryBySlug(String slug) {
+        Dormitory dormitory = dormitoryRepository.findBySlug(slug);
+        
+        if (dormitory == null) {
+            throw new RuntimeException("Dormitory not found with slug: " + slug);
+        }
+        GetDormitoryBySlug getSlug= new GetDormitoryBySlug(dormitory);
+        return getSlug ;
+    }
+    public List<DormitoryReviewDto> getDormitoryReviewById(int id) {
+       Dormitory dormitory = dormitoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Dormitory not found with id: " + id));
+        List<Review>reviews= dormitory.getReviews();
+
+        List<DormitoryReviewDto> dormitoryReviewDtos = reviews.stream()
+                .map(DormitoryReviewDto::new)
+                .collect(Collectors.toList());
+        return dormitoryReviewDtos;
+         
     }
 }

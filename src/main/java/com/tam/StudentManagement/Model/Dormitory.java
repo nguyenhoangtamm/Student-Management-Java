@@ -41,6 +41,8 @@ public class Dormitory extends BaseModel {
     @Column(name = "owner_name", length = 50)
     private String ownerName;
 
+    @Column(name = "status", length = 50)
+    private Integer status;
     @Column(name = "phone_number", length = 30)
     private String phoneNumber;
 
@@ -98,4 +100,7 @@ public class Dormitory extends BaseModel {
     @OneToMany(mappedBy = "dormitory")
     @JsonIgnore
     private List<DormitoryService> dormitoryServices;
+    @OneToMany(mappedBy = "dormitory")
+    @JsonIgnore
+    private List<Review> reviews;
 }

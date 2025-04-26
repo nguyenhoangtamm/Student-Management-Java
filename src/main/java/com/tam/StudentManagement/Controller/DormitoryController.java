@@ -1,6 +1,8 @@
 package com.tam.StudentManagement.Controller;
 
 import com.tam.StudentManagement.Dto.Dormitory.DormitoryDto;
+import com.tam.StudentManagement.Dto.Dormitory.DormitoryReviewDto;
+import com.tam.StudentManagement.Dto.Dormitory.GetDormitoryBySlug;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Dormitory.CreateDormitoryDto;
 import com.tam.StudentManagement.Model.Dormitory;
@@ -62,5 +64,21 @@ public class DormitoryController {
             @RequestParam(required = false) String keyword) {
         PaginationDto<DormitoryDto> data = dormitoryService.getDormitoriesByPagination(pageNumber, pageSize, keyword);
         return ResponseEntity.ok(ApiResponse.success("Get dormitories by pagination successfully", data));
+    }
+
+    @GetMapping("get-by-slug/{slug}")
+    public ResponseEntity<ApiResponse<GetDormitoryBySlug>> getDormitoryBySlug(@PathVariable String slug) {
+        GetDormitoryBySlug dormitory = dormitoryService.getDormitoryBySlug(slug);
+        if (dormitory != null) {
+            return ResponseEntity.ok(ApiResponse.success("Get dormitory successfully", dormitory));
+        } else {
+            return ResponseEntity.ok(ApiResponse.error("Dormitory not found"));
+        }
+    }
+
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<ApiResponse<List<DormitoryReviewDto>>> getDormitoryReviews(@PathVariable Integer id) {
+        List<DormitoryReviewDto> reviews = dormitoryService.getDormitoryReviewById(id);
+        return ResponseEntity.ok(ApiResponse.success("Get dormitory reviews successfully", reviews));
     }
 }
