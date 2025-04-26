@@ -16,6 +16,7 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
     Student findByCode(String code);
 
     Student findByEmail(String email);
+    int countByResidenceStatus(int residenceStatus);
 
     Student findByPhoneNumber(String phoneNumber);
 

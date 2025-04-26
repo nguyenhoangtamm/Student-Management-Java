@@ -4,13 +4,15 @@ import lombok.Data;
 
 @Data
 public class StudentStatisticsDto {
-    private Integer totalStudents;
-    private Integer activeStudents;
-    private Integer inactiveStudents;
-    private Integer offCampusStudents;
-    private Integer onCampusStudents;
-    private Integer maleStudents;
-    private Integer femaleStudents;
-    private Integer internationalStudents;
-    private Integer domesticStudents;
+    private int confirmedStudents;
+    private int unconfirmedStudents;
+    private int atHomeStudents;
+    private int otherStudents;
+
+    public StudentStatisticsDto( int confirmedStudents, int unconfirmedStudents, int atHomeStudents, int otherStudents) {
+        this.confirmedStudents = confirmedStudents;
+        this.unconfirmedStudents = unconfirmedStudents;
+        this.atHomeStudents = atHomeStudents;
+        this.otherStudents = otherStudents;
+    }
 }

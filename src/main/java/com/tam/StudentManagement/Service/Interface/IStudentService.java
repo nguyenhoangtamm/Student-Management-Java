@@ -1,6 +1,7 @@
 package com.tam.StudentManagement.Service.Interface;
 
 import com.tam.StudentManagement.Dto.Student.StudentDto;
+
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Student.CreateStudentDto;
 import com.tam.StudentManagement.Dto.Student.StudentDashboardDto;
@@ -47,4 +48,8 @@ public interface IStudentService {
     // StudentStatisticsDto getStatistics();
 
     // List<StudentNotificationDto> getStudentNotifications();
+    StudentStatisticsDto getStatistic();
+
+    StudentStatusDto getStatus();
+
 }

@@ -5,6 +5,8 @@ import com.tam.StudentManagement.Dto.Student.StudentHeaderInfoDto;
 import com.tam.StudentManagement.Dto.Student.StudentNotificationDto;
 import com.tam.StudentManagement.Dto.Student.StudentProfileDto;
 import com.tam.StudentManagement.Dto.Student.StudentServiceDto;
+import com.tam.StudentManagement.Dto.Student.StudentStatisticsDto;
+import com.tam.StudentManagement.Dto.Student.StudentStatusDto;
 import com.tam.StudentManagement.Enum.Student.GenderEnum;
 import com.tam.StudentManagement.Enum.Student.StatusEnum;
 import com.tam.StudentManagement.Enum.Student.EducationLevelEnum;
@@ -415,5 +417,32 @@ public class StudentService implements IStudentService {
             );
         }
         throw new RuntimeException("Authentication failed or user not logged in");
+    }
+    @Override
+    public  StudentStatisticsDto getStatistic(){
+        int confirmedStudents = studentRepository.countByResidenceStatus(1);
+        int unconfirmedStudents = studentRepository.countByResidenceStatus(0);
+        int atHomeStudents = studentRepository.countByResidenceStatus(2);
+        int otherStudents = studentRepository.countByResidenceStatus(3);
+
+        StudentStatisticsDto studentStatisticsDto = new StudentStatisticsDto(
+             confirmedStudents, unconfirmedStudents, atHomeStudents, otherStudents
+        );
+        return studentStatisticsDto;
+        
+       
+    }
+    
+    @Override
+    public   StudentStatusDto getStatus(){
+        int totalStudents = (int) studentRepository.count();
+        int totalDormitories = (int) dormitoryRepository.count();
+        int confirmedStudents = studentRepository.countByResidenceStatus(1);
+        int unconfirmedStudents = studentRepository.countByResidenceStatus(0);
+        StudentStatusDto studentStatusDto = new StudentStatusDto(
+            totalStudents, totalDormitories, confirmedStudents,
+             unconfirmedStudents);
+        return studentStatusDto;
+       
     }
 }

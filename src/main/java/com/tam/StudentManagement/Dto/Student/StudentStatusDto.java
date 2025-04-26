@@ -4,13 +4,16 @@ import lombok.Data;
 
 @Data
 public class StudentStatusDto {
-    private String studentId;
-    private String fullName;
-    private String status;
-    private String currentSemester;
-    private String academicStatus;
-    private String enrollmentStatus;
-    private Boolean isOffCampus;
-    private String offCampusReason;
-    private String offCampusAddress;
+    private int students;
+    private int dormitories;
+    private int confirmedStudents;
+    private int unconfirmedStudents;
+
+
+    public StudentStatusDto(int students, int dormitories, int confirmedStudents, int unconfirmedStudents) {
+        this.students = students;
+        this.dormitories = dormitories;
+        this.confirmedStudents = confirmedStudents;
+        this.unconfirmedStudents = unconfirmedStudents;
+    }
 }

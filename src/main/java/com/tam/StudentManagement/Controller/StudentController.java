@@ -110,19 +110,19 @@ public class StudentController {
     // successfully", result));
     // }
 
-    // @GetMapping("/status")
-    // public ResponseEntity<ApiResponse<StudentStatusDto>> getStatus() {
-    // StudentStatusDto status = studentService.getStatus();
-    // return ResponseEntity.ok(ApiResponse.success("Get status successfully",
-    // status));
-    // }
+    @GetMapping("/status")
+    public ResponseEntity<ApiResponse<StudentStatusDto>> getStatus() {
+    StudentStatusDto status = studentService.getStatus();
+    return ResponseEntity.ok(ApiResponse.success("Get status successfully",
+    status));
+    }
 
-    // @GetMapping("/statistics")
-    // public ResponseEntity<ApiResponse<StudentStatisticsDto>> getStatistics() {
-    // StudentStatisticsDto statistics = studentService.getStatistics();
-    // return ResponseEntity.ok(ApiResponse.success("Get statistics successfully",
-    // statistics));
-    // }
+    @GetMapping("/statistics")
+    public ResponseEntity<ApiResponse<StudentStatisticsDto>> getStatistics() {
+    StudentStatisticsDto statistics = studentService.getStatistic();
+    return ResponseEntity.ok(ApiResponse.success("Get statistics successfully",
+    statistics));
+    }
 
     // @GetMapping("/notifications")
     // public ResponseEntity<ApiResponse<List<StudentNotificationDto>>>
