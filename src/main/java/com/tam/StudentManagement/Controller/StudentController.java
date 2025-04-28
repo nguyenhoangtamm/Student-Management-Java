@@ -117,7 +117,7 @@ public class StudentController {
     status));
     }
 
-    @GetMapping("/statistics")
+    @GetMapping("/students/statistics")
     public ResponseEntity<ApiResponse<StudentStatisticsDto>> getStatistics() {
     StudentStatisticsDto statistics = studentService.getStatistic();
     return ResponseEntity.ok(ApiResponse.success("Get statistics successfully",

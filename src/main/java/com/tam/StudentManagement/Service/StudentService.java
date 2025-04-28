@@ -94,7 +94,6 @@ public class StudentService implements IStudentService {
 
         Student entity = new Student();
         entity.setCode(request.getCode());
-        entity.setPassword(passwordEncoder.encode(request.getPassword()));
         entity.setFullName(request.getFullName());
         entity.setGender(request.getGender());
         entity.setDateOfBirth(request.getDateOfBirth());
@@ -105,9 +104,7 @@ public class StudentService implements IStudentService {
             Optional<Dormitory> dormitory = dormitoryRepository.findById(request.getDormitoryId());
             dormitory.ifPresent(entity::setDormitory);
         }
-
-        entity.setRoom(request.getRoom());
-
+       
         // Set major relationship
         if (request.getMajorId() != null) {
             Optional<Major> major = majorRepository.findById(request.getMajorId());

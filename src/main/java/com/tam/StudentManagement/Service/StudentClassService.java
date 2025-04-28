@@ -26,8 +26,12 @@ public class StudentClassService implements IStudentClassService {
     private StudentClassRepository studentClassRepository;
 
     @Override
-    public List<StudentClass> getAllStudentClasses() {
-        return studentClassRepository.findAll();
+    public List<StudentClassDto> getAllStudentClasses() {
+        List<StudentClass> studentClasses = studentClassRepository.findAll();
+        List<StudentClassDto> studentClassDtos = studentClasses.stream()
+                .map(StudentClassDto::new)
+                .collect(Collectors.toList());
+        return studentClassDtos;
     }
 
     @Override

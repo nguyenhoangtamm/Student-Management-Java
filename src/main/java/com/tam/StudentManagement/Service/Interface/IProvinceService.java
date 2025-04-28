@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IProvinceService {
-    List<Province> getAllProvinces();
+    List<ProvinceDto> getAllProvinces();
 
     Optional<Province> getProvinceById(Integer id);
 

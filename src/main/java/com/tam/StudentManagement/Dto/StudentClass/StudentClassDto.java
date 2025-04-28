@@ -11,13 +11,11 @@ import com.tam.StudentManagement.Model.StudentClass;
 public class StudentClassDto {
     private Integer id;
     private String code;
-    private String fullName;
-    private Integer totalStudent;
+    private String name;
 
     public StudentClassDto(StudentClass entity) {
         this.id = entity.getId();
         this.code = entity.getCode();
-        this.fullName = entity.getName();
-        this.totalStudent = entity.getTotalStudent();
+        this.name = entity.getName();
     }
 }

@@ -21,9 +21,9 @@ public class ProvinceController {
     @Autowired
     private IProvinceService provinceService;
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<Province>>> getAllProvinces() {
-        List<Province> provinces = provinceService.getAllProvinces();
+    @GetMapping("/get-all")
+    public ResponseEntity<ApiResponse<List<ProvinceDto>>> getAllProvinces() {
+        List<ProvinceDto> provinces = provinceService.getAllProvinces();
         return ResponseEntity.ok(ApiResponse.success("Get provinces successfully", provinces));
     }
 

@@ -13,9 +13,6 @@ public class CreateStudentRequest {
     @Size(max = 30, message = "Mã sinh viên tối đa 30 ký tự")
     private String code;
 
-    @NotBlank(message = "Mật khẩu không được để trống")
-    @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
-    private String password;
 
     @NotBlank(message = "Họ và tên không được để trống")
     private String fullName;
@@ -32,8 +29,6 @@ public class CreateStudentRequest {
     private String faculty = "Unknown";
 
     private Integer dormitoryId;
-
-    private String room;
 
     @NotNull(message = "Mã lớp không được để trống")
     private Integer classId;

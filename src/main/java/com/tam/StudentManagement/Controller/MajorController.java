@@ -22,9 +22,9 @@ public class MajorController {
     @Autowired
     private IMajorService majorService;
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<Major>>> getAllMajors() {
-        List<Major> majors = majorService.getAllMajors();
+    @GetMapping("/get-all")
+    public ResponseEntity<ApiResponse<List<MajorDto>>> getAllMajors() {
+        List<MajorDto> majors = majorService.getAllMajors();
         return ResponseEntity.ok(ApiResponse.success("Get majors successfully", majors));
     }
 

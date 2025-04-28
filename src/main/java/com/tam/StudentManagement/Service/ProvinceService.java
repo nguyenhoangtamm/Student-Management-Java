@@ -26,8 +26,12 @@ public class ProvinceService implements IProvinceService {
     private ProvinceRepository provinceRepository;
 
     @Override
-    public List<Province> getAllProvinces() {
-        return provinceRepository.findAll();
+    public List<ProvinceDto> getAllProvinces() {
+        List<Province> provices = provinceRepository.findAll();
+        List<ProvinceDto> provinceDtos = provices.stream()
+                .map(ProvinceDto::new)
+                .collect(Collectors.toList());
+        return provinceDtos;
     }
 
     @Override

@@ -18,7 +18,7 @@ public class StudentDto {
     private Integer gender;
     private LocalDate dateOfBirth;
     private String email;
-    private String phoneNumber;
+    private String phone;
     private Integer provinceId;
     private Integer districtId;
     private Integer wardId;
@@ -35,7 +35,7 @@ public class StudentDto {
         this.gender = entity.getGender();
         this.dateOfBirth = entity.getDateOfBirth();
         this.email = entity.getEmail();
-        this.phoneNumber = entity.getPhoneNumber();
+        this.phone = entity.getPhoneNumber();
         this.provinceId = entity.getProvince() != null ? entity.getProvince().getId() : null;
         this.districtId = entity.getDistrict() != null ? entity.getDistrict().getId() : null;
         this.wardId = entity.getWard() != null ? entity.getWard().getId() : null;

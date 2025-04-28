@@ -2,9 +2,11 @@ package com.tam.StudentManagement.Service;
 
 import com.tam.StudentManagement.Dto.Major.CreateMajorDto;
 import com.tam.StudentManagement.Dto.Major.MajorDto;
+import com.tam.StudentManagement.Dto.StudentClass.StudentClassDto;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Common.PaginationInfo;
 import com.tam.StudentManagement.Model.Major;
+import com.tam.StudentManagement.Model.StudentClass;
 import com.tam.StudentManagement.Repository.MajorRepository;
 import com.tam.StudentManagement.Request.Major.CreateMajorRequest;
 import com.tam.StudentManagement.Request.Major.UpdateMajorRequest;
@@ -26,8 +28,12 @@ public class MajorService implements IMajorService {
     private MajorRepository majorRepository;
 
     @Override
-    public List<Major> getAllMajors() {
-        return majorRepository.findAll();
+    public List<MajorDto> getAllMajors() {
+        List<Major> majors = majorRepository.findAll();
+        List<MajorDto> majorDtos = majors.stream()
+                .map(MajorDto::new)
+                .collect(Collectors.toList());
+        return majorDtos;
     }
 
     @Override
