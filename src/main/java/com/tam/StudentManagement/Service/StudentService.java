@@ -91,20 +91,21 @@ public class StudentService implements IStudentService {
         if (exitEntity != null) {
             throw new DuplicateException("Phone number already exists");
         }
+        String provinceName = provinceRepository.findById(request.getProvinceId()).get().getName();
 
         Student entity = new Student();
         entity.setCode(request.getCode());
         entity.setFullName(request.getFullName());
         entity.setGender(request.getGender());
         entity.setDateOfBirth(request.getDateOfBirth());
-        entity.setFaculty(request.getFaculty());
 
-        // Set dormitory relationship if dormitoryId is provided
-        if (request.getDormitoryId() != null) {
-            Optional<Dormitory> dormitory = dormitoryRepository.findById(request.getDormitoryId());
-            dormitory.ifPresent(entity::setDormitory);
-        }
-       
+        // // Set dormitory relationship if dormitoryId is provided
+        // if (request.getDormitoryId() != null) {
+        // Optional<Dormitory> dormitory =
+        // dormitoryRepository.findById(request.getDormitoryId());
+        // dormitory.ifPresent(entity::setDormitory);
+        // }
+
         // Set major relationship
         if (request.getMajorId() != null) {
             Optional<Major> major = majorRepository.findById(request.getMajorId());
@@ -119,36 +120,36 @@ public class StudentService implements IStudentService {
 
         entity.setPhoneNumber(request.getPhoneNumber());
         entity.setEmail(request.getEmail());
-        entity.setEducationLevel(request.getEducationLevel());
-        entity.setResidenceStatus(request.getResidenceStatus());
+        // entity.setEducationLevel(request.getEducationLevel());
+        entity.setResidenceStatus(0);
+        entity.setStatus(0);
         entity.setAcademicYear(request.getAcademicYear());
-        entity.setBirthplace(request.getBirthplace());
-        entity.setStatus(request.getStatus());
-        entity.setIsAdmin(request.getIsAdmin());
-        entity.setAvatar(request.getAvatar());
-        entity.setMonthlyRent(request.getMonthlyRent());
-        entity.setContractStatus(request.getContractStatus());
-        entity.setAddress(request.getAddress());
-        entity.setFullAddress(request.getFullAddress());
+        // entity.setStatus(request.getStatus());
+        entity.setIsAdmin(false);
+        // entity.setAvatar(request.getAvatar());
+        // entity.setMonthlyRent(request.getMonthlyRent());
+        // entity.setContractStatus(request.getContractStatus());
+        // entity.setAddress(request.getAddress());
+        // entity.setFullAddress(request.getFullAddress());
+        entity.setBirthplace(provinceName);
+        // // Set ward relationship
+        // if (request.getWardId() != null) {
+        // Optional<Ward> ward = wardRepository.findById(request.getWardId());
+        // ward.ifPresent(entity::setWard);
+        // }
 
-        // Set ward relationship
-        if (request.getWardId() != null) {
-            Optional<Ward> ward = wardRepository.findById(request.getWardId());
-            ward.ifPresent(entity::setWard);
-        }
-
-        // Set district relationship
-        if (request.getDistrictId() != null) {
-            Optional<District> district = districtRepository.findById(request.getDistrictId());
-            district.ifPresent(entity::setDistrict);
-        }
+        // // Set district relationship
+        // if (request.getDistrictId() != null) {
+        // Optional<District> district =
+        // districtRepository.findById(request.getDistrictId());
+        // district.ifPresent(entity::setDistrict);
+        // }
 
         // Set province relationship
         if (request.getProvinceId() != null) {
             Optional<Province> province = provinceRepository.findById(request.getProvinceId());
             province.ifPresent(entity::setProvince);
         }
-
         studentRepository.save(entity);
 
         return new CreateStudentDto(entity);
@@ -156,18 +157,22 @@ public class StudentService implements IStudentService {
 
     @Override
     public Student updateStudent(Integer id, UpdateStudentRequest studentDetails) {
+        Student studentUpdate = studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
+
         Student exitEntity = studentRepository.findByCode(studentDetails.getCode());
-        if (exitEntity != null) {
+        if (exitEntity != null && exitEntity.getCode() != studentUpdate.getCode()) {
             throw new DuplicateException("Student code already exists");
         }
         exitEntity = studentRepository.findByEmail(studentDetails.getEmail());
-        if (exitEntity != null) {
+        if (exitEntity != null && exitEntity.getEmail() != studentUpdate.getEmail()) {
             throw new DuplicateException("Email already exists");
         }
         exitEntity = studentRepository.findByPhoneNumber(studentDetails.getPhoneNumber());
-        if (exitEntity != null) {
+        if (exitEntity != null && exitEntity.getPhoneNumber() != studentUpdate.getPhoneNumber()) {
             throw new DuplicateException("Phone number already exists");
         }
+        String provinceName = provinceRepository.findById(studentDetails.getProvinceId()).get().getName();
 
         return studentRepository.findById(id).map(student -> {
             if (studentDetails.getFullName() != null) {
@@ -182,25 +187,26 @@ public class StudentService implements IStudentService {
             if (studentDetails.getCode() != null) {
                 student.setCode(studentDetails.getCode());
             }
-            if (studentDetails.getPassword() != null) {
-                student.setPassword(passwordEncoder.encode(studentDetails.getPassword()));
-            }
+            // if (studentDetails.getPassword() != null) {
+            // student.setPassword(passwordEncoder.encode(studentDetails.getPassword()));
+            // }
             if (studentDetails.getGender() != null) {
                 student.setGender(studentDetails.getGender());
             }
             if (studentDetails.getDateOfBirth() != null) {
                 student.setDateOfBirth(studentDetails.getDateOfBirth());
             }
-            if (studentDetails.getFaculty() != null) {
-                student.setFaculty(studentDetails.getFaculty());
-            }
-            if (studentDetails.getDormitoryId() != null) {
-                Optional<Dormitory> dormitory = dormitoryRepository.findById(studentDetails.getDormitoryId());
-                dormitory.ifPresent(student::setDormitory);
-            }
-            if (studentDetails.getRoom() != null) {
-                student.setRoom(studentDetails.getRoom());
-            }
+            // if (studentDetails.getFaculty() != null) {
+            // student.setFaculty(studentDetails.getFaculty());
+            // }
+            // if (studentDetails.getDormitoryId() != null) {
+            // Optional<Dormitory> dormitory =
+            // dormitoryRepository.findById(studentDetails.getDormitoryId());
+            // dormitory.ifPresent(student::setDormitory);
+            // }
+            // if (studentDetails.getRoom() != null) {
+            // student.setRoom(studentDetails.getRoom());
+            // }
             if (studentDetails.getMajorId() != null) {
                 Optional<Major> major = majorRepository.findById(studentDetails.getMajorId());
                 major.ifPresent(student::setMajor);
@@ -209,47 +215,50 @@ public class StudentService implements IStudentService {
                 Optional<StudentClass> studentClass = studentClassRepository.findById(studentDetails.getClassId());
                 studentClass.ifPresent(student::setStudentClass);
             }
-            if (studentDetails.getEducationLevel() != null) {
-                student.setEducationLevel(studentDetails.getEducationLevel());
-            }
-            if (studentDetails.getResidenceStatus() != null) {
-                student.setResidenceStatus(studentDetails.getResidenceStatus());
-            }
+            // if (studentDetails.getEducationLevel() != null) {
+            // student.setEducationLevel(studentDetails.getEducationLevel());
+            // }
+            // if (studentDetails.getResidenceStatus() != null) {
+            // student.setResidenceStatus(studentDetails.getResidenceStatus());
+            // }
             if (studentDetails.getAcademicYear() != null) {
                 student.setAcademicYear(studentDetails.getAcademicYear());
             }
-            if (studentDetails.getBirthplace() != null) {
-                student.setBirthplace(studentDetails.getBirthplace());
-            }
-            if (studentDetails.getStatus() != null) {
-                student.setStatus(studentDetails.getStatus());
-            }
-            if (studentDetails.getIsAdmin() != null) {
-                student.setIsAdmin(studentDetails.getIsAdmin());
-            }
-            if (studentDetails.getAvatar() != null) {
-                student.setAvatar(studentDetails.getAvatar());
-            }
-            if (studentDetails.getMonthlyRent() != null) {
-                student.setMonthlyRent(studentDetails.getMonthlyRent());
-            }
-            if (studentDetails.getContractStatus() != null) {
-                student.setContractStatus(studentDetails.getContractStatus());
-            }
-            if (studentDetails.getAddress() != null) {
-                student.setAddress(studentDetails.getAddress());
-            }
-            if (studentDetails.getFullAddress() != null) {
-                student.setFullAddress(studentDetails.getFullAddress());
-            }
-            if (studentDetails.getWardId() != null) {
-                Optional<Ward> ward = wardRepository.findById(studentDetails.getWardId());
-                ward.ifPresent(student::setWard);
-            }
-            if (studentDetails.getDistrictId() != null) {
-                Optional<District> district = districtRepository.findById(studentDetails.getDistrictId());
-                district.ifPresent(student::setDistrict);
-            }
+            // if (studentDetails.getBirthplace() != null) {
+            // student.setBirthplace(studentDetails.getBirthplace());
+            // }
+            // if (studentDetails.getStatus() != null) {
+            // student.setStatus(studentDetails.getStatus());
+            // }
+            // if (studentDetails.getIsAdmin() != null) {
+            // student.setIsAdmin(studentDetails.getIsAdmin());
+            // }
+            // if (studentDetails.getAvatar() != null) {
+            // student.setAvatar(studentDetails.getAvatar());
+            // }
+            // if (studentDetails.getMonthlyRent() != null) {
+            // student.setMonthlyRent(studentDetails.getMonthlyRent());
+            // }
+            // if (studentDetails.getContractStatus() != null) {
+            // student.setContractStatus(studentDetails.getContractStatus());
+            // }
+            // if (studentDetails.getAddress() != null) {
+            // student.setAddress(studentDetails.getAddress());
+            // }
+            // if (studentDetails.getFullAddress() != null) {
+            // student.setFullAddress(studentDetails.getFullAddress());
+            // }
+            // if (studentDetails.getWardId() != null) {
+            // Optional<Ward> ward = wardRepository.findById(studentDetails.getWardId());
+            // ward.ifPresent(student::setWard);
+            // }
+            // if (studentDetails.getDistrictId() != null) {
+            // Optional<District> district =
+            // districtRepository.findById(studentDetails.getDistrictId());
+            // district.ifPresent(student::setDistrict);
+            // }
+            student.setBirthplace(provinceName);
+
             if (studentDetails.getProvinceId() != null) {
                 Optional<Province> province = provinceRepository.findById(studentDetails.getProvinceId());
                 province.ifPresent(student::setProvince);
@@ -262,7 +271,8 @@ public class StudentService implements IStudentService {
     public String deleteStudent(Integer id) {
         Student entity = studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
-        studentRepository.deleteById(id);
+        entity.setIsDelete(true);
+        studentRepository.save(entity);
         return "Student marked as deleted successfully";
     }
 
@@ -415,31 +425,30 @@ public class StudentService implements IStudentService {
         }
         throw new RuntimeException("Authentication failed or user not logged in");
     }
+
     @Override
-    public  StudentStatisticsDto getStatistic(){
+    public StudentStatisticsDto getStatistic() {
         int confirmedStudents = studentRepository.countByResidenceStatus(1);
         int unconfirmedStudents = studentRepository.countByResidenceStatus(0);
         int atHomeStudents = studentRepository.countByResidenceStatus(2);
         int otherStudents = studentRepository.countByResidenceStatus(3);
 
         StudentStatisticsDto studentStatisticsDto = new StudentStatisticsDto(
-             confirmedStudents, unconfirmedStudents, atHomeStudents, otherStudents
-        );
+                confirmedStudents, unconfirmedStudents, atHomeStudents, otherStudents);
         return studentStatisticsDto;
-        
-       
+
     }
-    
+
     @Override
-    public   StudentStatusDto getStatus(){
+    public StudentStatusDto getStatus() {
         int totalStudents = (int) studentRepository.count();
         int totalDormitories = (int) dormitoryRepository.count();
         int confirmedStudents = studentRepository.countByResidenceStatus(1);
         int unconfirmedStudents = studentRepository.countByResidenceStatus(0);
         StudentStatusDto studentStatusDto = new StudentStatusDto(
-            totalStudents, totalDormitories, confirmedStudents,
-             unconfirmedStudents);
+                totalStudents, totalDormitories, confirmedStudents,
+                unconfirmedStudents);
         return studentStatusDto;
-       
+
     }
 }

@@ -31,14 +31,14 @@ public class StudentController {
     private IStudentService studentService;
 
     // Lấy danh sách sinh viên
-    @GetMapping
+    @GetMapping("/get-all")
     public ResponseEntity<ApiResponse<List<Student>>> getAllStudents() {
         List<Student> students = studentService.getAllStudents();
         return ResponseEntity.ok(ApiResponse.success("Get students successfully", students));
     }
 
     // Lấy thông tin sinh viên theo ID
-    @GetMapping("/{id}")
+    @GetMapping("/get-by-id/{id}")
     public ResponseEntity<ApiResponse<Student>> getStudentById(@PathVariable Integer id) {
         return studentService.getStudentById(id)
                 .map(student -> ResponseEntity.ok(ApiResponse.success("Get student successfully", student)))
@@ -46,7 +46,7 @@ public class StudentController {
     }
 
     // Thêm mới sinh viên
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ApiResponse<CreateStudentDto>> createStudent(
             @Valid @RequestBody CreateStudentRequest student) {
         CreateStudentDto createdStudent = studentService.createStudent(student);
@@ -54,7 +54,7 @@ public class StudentController {
     }
 
     // Cập nhật thông tin sinh viên
-    @PutMapping("/{id}")
+    @PostMapping("/edit/{id}")
     public ResponseEntity<ApiResponse<Student>> updateStudent(@PathVariable Integer id,
             @Valid @RequestBody UpdateStudentRequest studentDetails) {
         Student updatedStudent = studentService.updateStudent(id, studentDetails);
@@ -62,7 +62,7 @@ public class StudentController {
     }
 
     // Xóa sinh viên (đánh dấu isDelete thay vì xóa thật sự)
-    @DeleteMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<ApiResponse<String>> deleteStudent(@PathVariable Integer id) {
         String message = studentService.deleteStudent(id);
         return ResponseEntity.ok(ApiResponse.success("Delete student successfully", message));
@@ -76,7 +76,7 @@ public class StudentController {
 
     @GetMapping("/get-paging")
     public ResponseEntity<ApiResponse<PaginationDto<StudentDto>>> getStudentsByPagination(
-            @RequestParam int pageNumber, @RequestParam int pageSize, 
+            @RequestParam int pageNumber, @RequestParam int pageSize,
             @RequestParam(required = false) String keyword) {
         PaginationDto<StudentDto> data = studentService.getStudentsByPagination(pageNumber, pageSize, keyword);
         return ResponseEntity.ok(ApiResponse.success("Get students by pagination successfully", data));
@@ -90,9 +90,9 @@ public class StudentController {
 
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<StudentProfileDto>> getProfile() {
-    StudentProfileDto profile = studentService.getProfile();
-    return ResponseEntity.ok(ApiResponse.success("Get profile successfully",
-    profile));
+        StudentProfileDto profile = studentService.getProfile();
+        return ResponseEntity.ok(ApiResponse.success("Get profile successfully",
+                profile));
     }
 
     // @GetMapping("/contract")
@@ -112,16 +112,16 @@ public class StudentController {
 
     @GetMapping("/status")
     public ResponseEntity<ApiResponse<StudentStatusDto>> getStatus() {
-    StudentStatusDto status = studentService.getStatus();
-    return ResponseEntity.ok(ApiResponse.success("Get status successfully",
-    status));
+        StudentStatusDto status = studentService.getStatus();
+        return ResponseEntity.ok(ApiResponse.success("Get status successfully",
+                status));
     }
 
     @GetMapping("/students/statistics")
     public ResponseEntity<ApiResponse<StudentStatisticsDto>> getStatistics() {
-    StudentStatisticsDto statistics = studentService.getStatistic();
-    return ResponseEntity.ok(ApiResponse.success("Get statistics successfully",
-    statistics));
+        StudentStatisticsDto statistics = studentService.getStatistic();
+        return ResponseEntity.ok(ApiResponse.success("Get statistics successfully",
+                statistics));
     }
 
     // @GetMapping("/notifications")
