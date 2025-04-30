@@ -73,8 +73,11 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public Optional<Student> getStudentById(Integer id) {
-        return studentRepository.findById(id);
+    public Optional<StudentDto> getStudentById(Integer id) {
+        return studentRepository.findById(id)
+                .filter(student -> !student.getIsDelete())
+                .map(StudentDto::new);
+
     }
 
     @Override
@@ -315,9 +318,10 @@ public class StudentService implements IStudentService {
         Page<Student> studentPage;
 
         if (keyword != null && !keyword.trim().isEmpty()) {
+            String lowerKeyword = keyword.toLowerCase(); // Chuyển keyword về chữ thường
             studentPage = studentRepository
-                    .findByFullNameContainingOrCodeContainingOrEmailContainingOrPhoneNumberContaining(
-                            keyword, keyword, keyword, keyword, pageable);
+                    .findByFullNameContainingIgnoreCaseOrCodeContainingIgnoreCaseOrEmailContainingIgnoreCaseOrPhoneNumberContainingIgnoreCase(
+                            lowerKeyword, lowerKeyword, lowerKeyword, lowerKeyword, pageable);
         } else {
             studentPage = studentRepository.findAll(pageable);
         }

@@ -39,7 +39,7 @@ public class StudentController {
 
     // Lấy thông tin sinh viên theo ID
     @GetMapping("/get-by-id/{id}")
-    public ResponseEntity<ApiResponse<Student>> getStudentById(@PathVariable Integer id) {
+    public ResponseEntity<ApiResponse<StudentDto>> getStudentById(@PathVariable Integer id) {
         return studentService.getStudentById(id)
                 .map(student -> ResponseEntity.ok(ApiResponse.success("Get student successfully", student)))
                 .orElseGet(() -> ResponseEntity.ok(ApiResponse.error("Student not found")));

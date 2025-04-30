@@ -27,8 +27,8 @@ public class ProvinceController {
         return ResponseEntity.ok(ApiResponse.success("Get provinces successfully", provinces));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Province>> getProvinceById(@PathVariable Integer id) {
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<ApiResponse<ProvinceDto>> getProvinceById(@PathVariable Integer id) {
         return provinceService.getProvinceById(id)
                 .map(province -> ResponseEntity.ok(ApiResponse.success("Get province successfully", province)))
                 .orElse(ResponseEntity.ok(ApiResponse.error("Province not found")));

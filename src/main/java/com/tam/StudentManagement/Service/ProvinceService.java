@@ -27,7 +27,9 @@ public class ProvinceService implements IProvinceService {
 
     @Override
     public List<ProvinceDto> getAllProvinces() {
-        List<Province> provices = provinceRepository.findAll();
+        List<Province> provices = provinceRepository.findAll().stream()
+                .filter(x -> x.getIsDelete() == false)
+                .collect(Collectors.toList());
         List<ProvinceDto> provinceDtos = provices.stream()
                 .map(ProvinceDto::new)
                 .collect(Collectors.toList());
@@ -35,8 +37,10 @@ public class ProvinceService implements IProvinceService {
     }
 
     @Override
-    public Optional<Province> getProvinceById(Integer id) {
-        return provinceRepository.findById(id);
+    public Optional<ProvinceDto> getProvinceById(Integer id) {
+        return provinceRepository.findById(id)
+        .filter(x->x.getIsDelete() == false)
+                .map(ProvinceDto::new);
     }
 
     @Override

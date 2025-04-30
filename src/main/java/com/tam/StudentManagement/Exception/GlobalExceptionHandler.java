@@ -15,41 +15,41 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    // private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    @ExceptionHandler(BaseException.class)
-    public ResponseEntity<ErrorResponse> handleBaseException(BaseException ex) {
-        ErrorResponse error = new ErrorResponse(
-                ex.getStatusCode(),
-                ex.getErrorCode(),
-                ex.getMessage(),
-                LocalDateTime.now().format(formatter));
-        return new ResponseEntity<>(error, HttpStatus.valueOf(ex.getStatusCode()));
-    }
+    // @ExceptionHandler(BaseException.class)
+    // public ResponseEntity<ErrorResponse> handleBaseException(BaseException ex) {
+    //     ErrorResponse error = new ErrorResponse(
+    //             ex.getStatusCode(),
+    //             ex.getErrorCode(),
+    //             ex.getMessage(),
+    //             LocalDateTime.now().format(formatter));
+    //     return new ResponseEntity<>(error, HttpStatus.valueOf(ex.getStatusCode()));
+    // }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return ResponseEntity.badRequest().body(errors);
-    }
+    // @ExceptionHandler(MethodArgumentNotValidException.class)
+    // public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    //     Map<String, String> errors = new HashMap<>();
+    //     ex.getBindingResult().getAllErrors().forEach(error -> {
+    //         String fieldName = ((FieldError) error).getField();
+    //         String errorMessage = error.getDefaultMessage();
+    //         errors.put(fieldName, errorMessage);
+    //     });
+    //     return ResponseEntity.badRequest().body(errors);
+    // }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
-        ErrorResponse error = new ErrorResponse(
-                500,
-                "INTERNAL_SERVER_ERROR",
-                "An unexpected error occurred",
-                LocalDateTime.now().format(formatter));
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    public class DuplicateException extends RuntimeException {
-        public DuplicateException(String message) {
-            super(message);
-        }
-    }
+    // @ExceptionHandler(Exception.class)
+    // public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
+    //     ErrorResponse error = new ErrorResponse(
+    //             500,
+    //             "INTERNAL_SERVER_ERROR",
+    //             "An unexpected error occurred",
+    //             LocalDateTime.now().format(formatter));
+    //     return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    // }
+    // public class DuplicateException extends RuntimeException {
+    //     public DuplicateException(String message) {
+    //         super(message);
+    //     }
+    // }
 }

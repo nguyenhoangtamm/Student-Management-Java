@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface IProvinceService {
     List<ProvinceDto> getAllProvinces();
 
-    Optional<Province> getProvinceById(Integer id);
+    Optional<ProvinceDto> getProvinceById(Integer id);
 
     CreateProvinceDto createProvince(CreateProvinceRequest request);
 

@@ -23,7 +23,7 @@ import java.util.Optional;
 public interface IStudentService {
     List<Student> getAllStudents();
 
-    Optional<Student> getStudentById(Integer id);
+    Optional<StudentDto> getStudentById(Integer id);
 
     CreateStudentDto createStudent(CreateStudentRequest student);
 
