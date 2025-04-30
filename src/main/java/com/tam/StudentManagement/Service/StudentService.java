@@ -321,8 +321,9 @@ public class StudentService implements IStudentService {
         } else {
             studentPage = studentRepository.findAll(pageable);
         }
-
         List<StudentDto> studentDtos = studentPage.getContent().stream()
+                .filter(student -> !student.getIsDelete())
+                .sorted((s1, s2) -> s1.getFullName().compareToIgnoreCase(s2.getFullName()))
                 .map(StudentDto::new)
                 .collect(Collectors.toList());
 

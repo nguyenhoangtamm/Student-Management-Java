@@ -22,47 +22,59 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+        @Autowired
+        private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private JwtTokenProvider tokenProvider;
+        @Autowired
+        private JwtTokenProvider tokenProvider;
 
-    @Autowired
-    private StudentRepository studentRepository;
+        @Autowired
+        private StudentRepository studentRepository;
 
-    @Override
-    public JwtAuthResponse login(LoginDto loginDto, HttpServletResponse response) {
-    Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                    loginDto.getCode(),
-                    loginDto.getPassword()));
+        @Override
+        public JwtAuthResponse login(LoginDto loginDto, HttpServletResponse response) {
+                Authentication authentication = authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(
+                                                loginDto.getCode(),
+                                                loginDto.getPassword()));
 
-    SecurityContextHolder.getContext().setAuthentication(authentication);
-    String token = tokenProvider.generateToken(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                String token = tokenProvider.generateToken(authentication);
 
-    ResponseCookie cookie = ResponseCookie.from("auth_token", token)
-            .httpOnly(true)  // Ngăn JS đọc
-            .secure(false)   // Bật true nếu dùng HTTPS
-            .path("/")
-            .maxAge(7 * 24 * 60 * 60) // 7 ngày
-            .sameSite("Lax")          // Tránh lỗi CORS
-            .build();
+                ResponseCookie cookie = ResponseCookie.from("auth_token", token)
+                                .httpOnly(true) // Ngăn JS đọc
+                                .secure(false) // Bật true nếu dùng HTTPS
+                                .path("/")
+                                .maxAge(7 * 24 * 60 * 60) // 7 ngày
+                                .sameSite("Lax") // Tránh lỗi CORS
+                                .build();
 
-    // 👇 Set cookie vào response
-    response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+                // 👇 Set cookie vào response
+                response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-    // Lấy thông tin sinh viên
-    StudentDetails studentDetails = (StudentDetails) authentication.getPrincipal();
-    Student student = studentDetails.getStudent();
-    UserLogin userLogin = new UserLogin(
-            student.getCode(),
-            student.getIsAdmin());
+                // Lấy thông tin sinh viên
+                StudentDetails studentDetails = (StudentDetails) authentication.getPrincipal();
+                Student student = studentDetails.getStudent();
+                UserLogin userLogin = new UserLogin(
+                                student.getCode(),
+                                student.getIsAdmin());
 
-    return new JwtAuthResponse(
-            true,
-            token,
-            userLogin);
-}
+                return new JwtAuthResponse(
+                                true,
+                                token,
+                                userLogin);
+        }
+
+        public void logout(HttpServletResponse response) {
+                ResponseCookie cookie = ResponseCookie.from("auth_token", null)
+                                .httpOnly(true)
+                                .secure(false) // Bật true nếu dùng HTTPS
+                                .path("/")
+                                .maxAge(0) // Đặt maxAge về 0 để xóa cookie
+                                .sameSite("Lax")
+                                .build();
+
+                response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        }
 
 }
