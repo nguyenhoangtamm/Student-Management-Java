@@ -37,7 +37,7 @@ public class DormitoryController {
                 .orElseGet(() -> ResponseEntity.ok(ApiResponse.error("Dormitory not found")));
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ApiResponse<CreateDormitoryDto>> createDormitory(
             @Valid @RequestBody CreateDormitoryRequest request) {
         CreateDormitoryDto createdDormitory = dormitoryService.createDormitory(request);

@@ -32,13 +32,20 @@ public class WardService implements IWardService {
     private DistrictRepository districtRepository;
 
     @Override
-    public List<Ward> getAllWards() {
-        return wardRepository.findAll();
+    public List<WardDto> getAllWardsByDistrictId(Integer id) {
+        List<Ward> wards = wardRepository.findAll().stream()
+                .filter(x -> x.getIsDelete() == false && x.getDistrict().getId().equals(id))
+                .collect(Collectors.toList());
+        return wards.stream()
+                .map(WardDto::new)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Ward> getWardById(Integer id) {
-        return wardRepository.findById(id);
+    public Optional<WardDto> getWardById(Integer id) {
+        return wardRepository.findById(id)
+                .filter(x -> x.getIsDelete() == false)
+                .map(WardDto::new);
     }
 
     @Override

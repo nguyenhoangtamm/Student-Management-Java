@@ -16,8 +16,7 @@ public class CreateDormitoryRequest {
     @Size(max = 255, message = "Address must not exceed 255 characters")
     private String address;
 
-    @NotBlank(message = "Full address is required")
-    private String fullAddress;
+    
 
     @NotNull(message = "Ward ID is required")
     private Integer wardId;
@@ -38,16 +37,14 @@ public class CreateDormitoryRequest {
 
     private String description;
     private String content;
-
-    @NotNull(message = "Number of rooms is required")
     private Integer rooms;
 
-    @NotNull(message = "Minimum price is required")
     private BigDecimal minPrice;
 
-    @NotNull(message = "Maximum price is required")
     private BigDecimal maxPrice;
 
     private Float longitude;
     private Float latitude;
+
+    private Integer status = 1; // Default status is 1 (active)
 }

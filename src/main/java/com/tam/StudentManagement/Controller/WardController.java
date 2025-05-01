@@ -8,6 +8,8 @@ import com.tam.StudentManagement.Request.Ward.CreateWardRequest;
 import com.tam.StudentManagement.Request.Ward.UpdateWardRequest;
 import com.tam.StudentManagement.Response.ApiResponse;
 import com.tam.StudentManagement.Service.Interface.IWardService;
+
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +23,14 @@ public class WardController {
     @Autowired
     private IWardService wardService;
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<Ward>>> getAllWards() {
-        List<Ward> wards = wardService.getAllWards();
+    @GetMapping("/get-all-by-district/{id}")
+    public ResponseEntity<ApiResponse<List<WardDto>>> getAllWardsByDistrictId(@PathVariable Integer id) {
+        List<WardDto> wards = wardService.getAllWardsByDistrictId(id);
         return ResponseEntity.ok(ApiResponse.success("Get wards successfully", wards));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Ward>> getWardById(@PathVariable Integer id) {
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<ApiResponse<WardDto>> getWardById(@PathVariable Integer id) {
         return wardService.getWardById(id)
                 .map(ward -> ResponseEntity.ok(ApiResponse.success("Get ward successfully", ward)))
                 .orElse(ResponseEntity.ok(ApiResponse.error("Ward not found")));

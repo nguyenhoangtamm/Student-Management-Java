@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IWardService {
-    List<Ward> getAllWards();
+    List<WardDto> getAllWardsByDistrictId(Integer id);
 
-    Optional<Ward> getWardById(Integer id);
+    Optional<WardDto> getWardById(Integer id);
 
     CreateWardDto createWard(CreateWardRequest request);
 

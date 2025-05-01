@@ -10,13 +10,11 @@ import com.tam.StudentManagement.Model.Province;
 @AllArgsConstructor
 public class ProvinceDto {
     private Integer id;
-    private String code;
     private String name;
     private Integer type;
 
     public ProvinceDto(Province entity) {
         this.id = entity.getId();
-        this.code = entity.getCode();
         this.name = entity.getName();
         this.type = entity.getType();
     }

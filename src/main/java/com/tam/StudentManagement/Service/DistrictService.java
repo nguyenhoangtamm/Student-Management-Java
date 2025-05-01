@@ -1,6 +1,7 @@
 package com.tam.StudentManagement.Service;
 
 import com.tam.StudentManagement.Dto.District.DistrictDto;
+import com.tam.StudentManagement.Dto.Province.ProvinceDto;
 import com.tam.StudentManagement.Dto.District.CreateDistrictDto;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Common.PaginationInfo;
@@ -32,13 +33,20 @@ public class DistrictService implements IDistrictService {
     private ProvinceRepository provinceRepository;
 
     @Override
-    public List<District> getAllDistricts() {
-        return districtRepository.findAll();
+    public List<DistrictDto> getAllDistrictsByProvinceId(Integer id) {
+        List<District> districts = districtRepository.findAll().stream()
+                .filter(x -> x.getIsDelete() == false && x.getProvince().getId().equals(id))
+                .collect(Collectors.toList());
+        return districts.stream()
+                .map(DistrictDto::new)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<District> getDistrictById(Integer id) {
-        return districtRepository.findById(id);
+    public Optional<DistrictDto> getDistrictById(Integer id) {
+        return districtRepository.findById(id)
+                .filter(x -> x.getIsDelete() == false)
+                .map(DistrictDto::new);
     }
 
     @Override

@@ -63,19 +63,44 @@ public class DormitoryService implements IDormitoryService {
             throw new DuplicateException("Dormitory name already exists");
         }
 
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Dormitory name is required");
+        }
+        if (request.getAddress() == null || request.getAddress().trim().isEmpty()) {
+            throw new IllegalArgumentException("Dormitory address is required");
+        }
+        if (request.getPhoneNumber() == null || request.getPhoneNumber().trim().isEmpty()) {
+            throw new IllegalArgumentException("Phone number is required");
+        }
+        // if (request.getMinPrice() == null || request.getMaxPrice() == null ||
+        // request.getMinPrice().compareTo(request.getMaxPrice()) > 0) {
+        // throw new IllegalArgumentException("Invalid price range");
+        // }
+
         Dormitory entity = new Dormitory();
         entity.setName(request.getName());
         entity.setAddress(request.getAddress());
-        entity.setFullAddress(request.getFullAddress());
+        entity.setStatus(request.getStatus());
         entity.setOwnerName(request.getOwnerName());
         entity.setPhoneNumber(request.getPhoneNumber());
         entity.setDescription(request.getDescription());
         entity.setContent(request.getContent());
-        entity.setRooms(request.getRooms());
-        entity.setMinPrice(request.getMinPrice());
-        entity.setMaxPrice(request.getMaxPrice());
-        entity.setLongitude(request.getLongitude());
-        entity.setLatitude(request.getLatitude());
+        // entity.setRooms(request.getRooms());
+        // entity.setMinPrice(request.getMinPrice());
+        // entity.setMaxPrice(request.getMaxPrice());
+        // entity.setLongitude(request.getLongitude());
+        // entity.setLatitude(request.getLatitude());
+
+        entity.setRooms(12);
+        entity.setMinPrice(BigDecimal.valueOf(1000000));
+        entity.setMaxPrice(BigDecimal.valueOf(2000000));
+        entity.setLongitude(105.0f);
+        entity.setLatitude(10.0f);
+        String fullAdress = request.getAddress() + ", " +
+                (request.getWardId() != null ? wardRepository.findById(request.getWardId()).get().getName() : "") + ", " +
+                (request.getDistrictId() != null ? districtRepository.findById(request.getDistrictId()).get().getName() : "") + ", " +
+                (request.getProvinceId() != null ? provinceRepository.findById(request.getProvinceId()).get().getName() : "");
+        entity.setFullAddress(fullAdress);
 
         // Set relationships
         if (request.getWardId() != null) {
@@ -213,24 +238,26 @@ public class DormitoryService implements IDormitoryService {
 
         return new PaginationDto<DormitoryDto>(dormitoryDtos, paginationInfo);
     }
+
     public GetDormitoryBySlug getDormitoryBySlug(String slug) {
         Dormitory dormitory = dormitoryRepository.findBySlug(slug);
-        
+
         if (dormitory == null) {
             throw new RuntimeException("Dormitory not found with slug: " + slug);
         }
-        GetDormitoryBySlug getSlug= new GetDormitoryBySlug(dormitory);
-        return getSlug ;
+        GetDormitoryBySlug getSlug = new GetDormitoryBySlug(dormitory);
+        return getSlug;
     }
+
     public List<DormitoryReviewDto> getDormitoryReviewById(int id) {
-       Dormitory dormitory = dormitoryRepository.findById(id)
+        Dormitory dormitory = dormitoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Dormitory not found with id: " + id));
-        List<Review>reviews= dormitory.getReviews();
+        List<Review> reviews = dormitory.getReviews();
 
         List<DormitoryReviewDto> dormitoryReviewDtos = reviews.stream()
                 .map(DormitoryReviewDto::new)
                 .collect(Collectors.toList());
         return dormitoryReviewDtos;
-         
+
     }
 }

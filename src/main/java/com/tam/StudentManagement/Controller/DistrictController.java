@@ -21,14 +21,14 @@ public class DistrictController {
     @Autowired
     private IDistrictService districtService;
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<District>>> getAllDistricts() {
-        List<District> districts = districtService.getAllDistricts();
+    @GetMapping ("get-all-by-province/{id}")
+    public ResponseEntity<ApiResponse<List<DistrictDto>>> getAllDistricts(@PathVariable Integer id) {
+        List<DistrictDto> districts = districtService.getAllDistrictsByProvinceId(id);
         return ResponseEntity.ok(ApiResponse.success("Get districts successfully", districts));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<District>> getDistrictById(@PathVariable Integer id) {
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<ApiResponse<DistrictDto>> getDistrictById(@PathVariable Integer id) {
         return districtService.getDistrictById(id)
                 .map(district -> ResponseEntity.ok(ApiResponse.success("Get district successfully", district)))
                 .orElse(ResponseEntity.ok(ApiResponse.error("District not found")));

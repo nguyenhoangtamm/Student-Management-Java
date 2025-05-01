@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IDistrictService {
-    List<District> getAllDistricts();
+    List<DistrictDto> getAllDistrictsByProvinceId(Integer id);
 
-    Optional<District> getDistrictById(Integer id);
+    Optional<DistrictDto> getDistrictById(Integer id);
 
     CreateDistrictDto createDistrict(CreateDistrictRequest request);
 
