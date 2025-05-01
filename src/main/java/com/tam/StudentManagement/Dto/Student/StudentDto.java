@@ -26,6 +26,7 @@ public class StudentDto {
     private Integer majorId;
     private Integer residenceStatus;
     private String academicYear;
+    private String fullAddress; // Địa chỉ đầy đủ (tùy chọn)
 
     // Constructor chuyển đổi từ entity sang DTO
     public StudentDto(Student entity) {
@@ -43,6 +44,7 @@ public class StudentDto {
         this.majorId = entity.getMajor() != null ? entity.getMajor().getId() : null;
         this.residenceStatus = entity.getResidenceStatus();
         this.academicYear = entity.getAcademicYear();
+        this.fullAddress = entity.getFullAddress(); // Địa chỉ đầy đủ (tùy chọn)
     }
 
     // Phương thức tạo DTO từ entity (tùy chọn)

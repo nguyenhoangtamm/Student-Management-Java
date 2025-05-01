@@ -148,6 +148,12 @@ public class StudentService implements IStudentService {
         // district.ifPresent(entity::setDistrict);
         // }
 
+        
+        // String fullAddress = request.getAddress() + "/ "
+        //         + provinceRepository.findById(request.getProvinceId()).get().getName() + "/ "
+        //         + districtRepository.findById(request.getdistrictId()).get().getName() + "/ "
+        //         + wardRepository.findById(request.getWardId()).get().getName();
+
         // Set province relationship
         if (request.getProvinceId() != null) {
             Optional<Province> province = provinceRepository.findById(request.getProvinceId());
