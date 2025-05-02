@@ -30,7 +30,7 @@ public class DormitoryController {
         return ResponseEntity.ok(ApiResponse.success("Get dormitories successfully", dormitories));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get-by-id/{id}")
     public ResponseEntity<ApiResponse<Dormitory>> getDormitoryById(@PathVariable Integer id) {
         return dormitoryService.getDormitoryById(id)
                 .map(dormitory -> ResponseEntity.ok(ApiResponse.success("Get dormitory successfully", dormitory)))
@@ -44,14 +44,14 @@ public class DormitoryController {
         return ResponseEntity.ok(ApiResponse.success("Create dormitory successfully", createdDormitory));
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/edit/{id}")
     public ResponseEntity<ApiResponse<Dormitory>> updateDormitory(@PathVariable Integer id,
             @Valid @RequestBody UpdateDormitoryRequest request) {
         Dormitory updatedDormitory = dormitoryService.updateDormitory(id, request);
         return ResponseEntity.ok(ApiResponse.success("Update dormitory successfully", updatedDormitory));
     }
 
-    @DeleteMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<ApiResponse<String>> deleteDormitory(@PathVariable Integer id) {
         String message = dormitoryService.deleteDormitory(id);
         return ResponseEntity.ok(ApiResponse.success("Delete dormitory successfully", message));

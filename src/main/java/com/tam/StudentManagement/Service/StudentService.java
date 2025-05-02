@@ -69,7 +69,9 @@ public class StudentService implements IStudentService {
 
     @Override
     public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+        return studentRepository.findAll().stream()
+            .filter(student -> !student.getIsDelete())
+            .collect(Collectors.toList());
     }
 
     @Override

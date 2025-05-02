@@ -47,7 +47,9 @@ public class DormitoryService implements IDormitoryService {
 
     @Override
     public List<Dormitory> getAllDormitories() {
-        return dormitoryRepository.findAll();
+        return dormitoryRepository.findAll().stream()
+                .filter(dormitory -> !dormitory.getIsDelete())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -97,9 +99,13 @@ public class DormitoryService implements IDormitoryService {
         entity.setLongitude(105.0f);
         entity.setLatitude(10.0f);
         String fullAdress = request.getAddress() + ", " +
-                (request.getWardId() != null ? wardRepository.findById(request.getWardId()).get().getName() : "") + ", " +
-                (request.getDistrictId() != null ? districtRepository.findById(request.getDistrictId()).get().getName() : "") + ", " +
-                (request.getProvinceId() != null ? provinceRepository.findById(request.getProvinceId()).get().getName() : "");
+                (request.getWardId() != null ? wardRepository.findById(request.getWardId()).get().getName() : "") + ", "
+                +
+                (request.getDistrictId() != null ? districtRepository.findById(request.getDistrictId()).get().getName()
+                        : "")
+                + ", " +
+                (request.getProvinceId() != null ? provinceRepository.findById(request.getProvinceId()).get().getName()
+                        : "");
         entity.setFullAddress(fullAdress);
 
         // Set relationships
@@ -154,9 +160,7 @@ public class DormitoryService implements IDormitoryService {
             if (request.getAddress() != null) {
                 dormitory.setAddress(request.getAddress());
             }
-            if (request.getFullAddress() != null) {
-                dormitory.setFullAddress(request.getFullAddress());
-            }
+
             if (request.getOwnerName() != null) {
                 dormitory.setOwnerName(request.getOwnerName());
             }
@@ -209,8 +213,9 @@ public class DormitoryService implements IDormitoryService {
     public String deleteDormitory(Integer id) {
         Dormitory entity = dormitoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Dormitory not found with id: " + id));
-        dormitoryRepository.deleteById(id);
-        return "Dormitory deleted successfully";
+        entity.setIsDelete(true);
+        dormitoryRepository.save(entity);
+        return "Dormitory marked as deleted successfully";
     }
 
     @Override
@@ -227,6 +232,8 @@ public class DormitoryService implements IDormitoryService {
         }
 
         List<DormitoryDto> dormitoryDtos = dormitoryPage.getContent().stream()
+                .filter(dormitory -> !dormitory.getIsDelete())
+                .sorted((d1, d2) -> d1.getName().compareToIgnoreCase(d2.getName()))
                 .map(DormitoryDto::new)
                 .collect(Collectors.toList());
 
