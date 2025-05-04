@@ -74,7 +74,7 @@ public class DormitoryService implements IDormitoryService {
         if (request.getPhoneNumber() == null || request.getPhoneNumber().trim().isEmpty()) {
             throw new IllegalArgumentException("Phone number is required");
         }
-      
+
         Dormitory entity = new Dormitory();
         entity.setName(request.getName());
         entity.setAddress(request.getAddress());
@@ -197,9 +197,13 @@ public class DormitoryService implements IDormitoryService {
         }
 
         String fullAddress = request.getAddress() + ", " +
-                (request.getWardId() != null ? wardRepository.findById(request.getWardId()).get().getName() : "") + ", " +
-                (request.getDistrictId() != null ? districtRepository.findById(request.getDistrictId()).get().getName() : "") + ", " +
-                (request.getProvinceId() != null ? provinceRepository.findById(request.getProvinceId()).get().getName() : "");
+                (request.getWardId() != null ? wardRepository.findById(request.getWardId()).get().getName() : "") + ", "
+                +
+                (request.getDistrictId() != null ? districtRepository.findById(request.getDistrictId()).get().getName()
+                        : "")
+                + ", " +
+                (request.getProvinceId() != null ? provinceRepository.findById(request.getProvinceId()).get().getName()
+                        : "");
         dormitory.setFullAddress(fullAddress);
 
         return dormitoryRepository.save(dormitory);
@@ -236,7 +240,7 @@ public class DormitoryService implements IDormitoryService {
         PaginationInfo paginationInfo = new PaginationInfo(
                 pageNumber,
                 pageSize,
-                dormitoryPage.getTotalElements(),
+                dormitoryPage.getTotalElements() / pageSize,
                 dormitoryPage.getTotalPages());
 
         return new PaginationDto<DormitoryDto>(dormitoryDtos, paginationInfo);
