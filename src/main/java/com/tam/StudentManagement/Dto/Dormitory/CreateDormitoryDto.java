@@ -17,11 +17,11 @@ public class CreateDormitoryDto {
     private String description;
     private String content;
     private Integer status;
-    // private Integer rooms;
-    // private BigDecimal minPrice;
-    // private BigDecimal maxPrice;
-    // private Float longitude;
-    // private Float latitude;
+    private Integer rooms;
+    private BigDecimal minPrice;
+    private BigDecimal maxPrice;
+    private Float longitude;
+    private Float latitude;
     public CreateDormitoryDto(Dormitory entity) {
         this.name = entity.getName();
         this.address = entity.getAddress();
@@ -33,10 +33,10 @@ public class CreateDormitoryDto {
         this.phoneNumber = entity.getPhoneNumber();
         this.description = entity.getDescription();
         this.content = entity.getContent();
-        // this.rooms = entity.getRooms();
-        // this.minPrice = entity.getMinPrice();
-        // this.maxPrice = entity.getMaxPrice();
-        // this.longitude = entity.getLongitude();
-        // this.latitude = entity.getLatitude();
+        this.rooms = entity.getRooms();
+        this.minPrice = entity.getMinPrice();
+        this.maxPrice = entity.getMaxPrice();
+        this.longitude = entity.getLongitude();
+        this.latitude = entity.getLatitude();
     }
 }

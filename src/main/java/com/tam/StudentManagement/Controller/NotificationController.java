@@ -1,8 +1,6 @@
 package com.tam.StudentManagement.Controller;
 
 import com.tam.StudentManagement.Dto.Notification.CreateNotificationDto;
-import com.tam.StudentManagement.Dto.Notification.NotificationDto;
-import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Model.Notification;
 import com.tam.StudentManagement.Request.Notification.CreateNotificationRequest;
 import com.tam.StudentManagement.Request.Notification.UpdateNotificationRequest;

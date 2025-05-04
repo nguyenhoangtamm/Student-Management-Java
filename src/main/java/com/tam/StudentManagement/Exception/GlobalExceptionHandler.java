@@ -3,6 +3,7 @@ package com.tam.StudentManagement.Exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,41 +16,50 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    // @ExceptionHandler(BaseException.class)
-    // public ResponseEntity<ErrorResponse> handleBaseException(BaseException ex) {
-    //     ErrorResponse error = new ErrorResponse(
-    //             ex.getStatusCode(),
-    //             ex.getErrorCode(),
-    //             ex.getMessage(),
-    //             LocalDateTime.now().format(formatter));
-    //     return new ResponseEntity<>(error, HttpStatus.valueOf(ex.getStatusCode()));
-    // }
+    @ExceptionHandler(BaseException.class)
+    public ResponseEntity<ErrorResponse> handleBaseException(BaseException ex) {
+        ErrorResponse error = new ErrorResponse(
+                ex.getStatusCode(),
+                ex.getErrorCode(),
+                ex.getMessage(),
+                LocalDateTime.now().format(formatter));
+        return new ResponseEntity<>(error, HttpStatus.valueOf(ex.getStatusCode()));
+    }
 
-    // @ExceptionHandler(MethodArgumentNotValidException.class)
-    // public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-    //     Map<String, String> errors = new HashMap<>();
-    //     ex.getBindingResult().getAllErrors().forEach(error -> {
-    //         String fieldName = ((FieldError) error).getField();
-    //         String errorMessage = error.getDefaultMessage();
-    //         errors.put(fieldName, errorMessage);
-    //     });
-    //     return ResponseEntity.badRequest().body(errors);
-    // }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        // Lấy thông báo lỗi đầu tiên từ danh sách lỗi
+        String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
 
-    // @ExceptionHandler(Exception.class)
-    // public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
-    //     ErrorResponse error = new ErrorResponse(
-    //             500,
-    //             "INTERNAL_SERVER_ERROR",
-    //             "An unexpected error occurred",
-    //             LocalDateTime.now().format(formatter));
-    //     return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
-    // public class DuplicateException extends RuntimeException {
-    //     public DuplicateException(String message) {
-    //         super(message);
-    //     }
-    // }
+        // Tạo đối tượng ErrorResponse
+        ErrorResponse error = new ErrorResponse(
+                400,
+                "VALIDATION_ERROR",
+                errorMessage,
+                LocalDateTime.now().format(formatter));
+
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
+        ErrorResponse error = new ErrorResponse(
+                500,
+                "INTERNAL_SERVER_ERROR",
+                "An unexpected error occurred",
+                LocalDateTime.now().format(formatter));
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
+        ErrorResponse error = new ErrorResponse(
+                405,
+                "METHOD_NOT_ALLOWED",
+                "HTTP method " + ex.getMethod() + " is not supported for this endpoint",
+                LocalDateTime.now().format(formatter));
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
+    }
 }

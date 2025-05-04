@@ -74,11 +74,7 @@ public class DormitoryService implements IDormitoryService {
         if (request.getPhoneNumber() == null || request.getPhoneNumber().trim().isEmpty()) {
             throw new IllegalArgumentException("Phone number is required");
         }
-        // if (request.getMinPrice() == null || request.getMaxPrice() == null ||
-        // request.getMinPrice().compareTo(request.getMaxPrice()) > 0) {
-        // throw new IllegalArgumentException("Invalid price range");
-        // }
-
+      
         Dormitory entity = new Dormitory();
         entity.setName(request.getName());
         entity.setAddress(request.getAddress());
@@ -87,17 +83,17 @@ public class DormitoryService implements IDormitoryService {
         entity.setPhoneNumber(request.getPhoneNumber());
         entity.setDescription(request.getDescription());
         entity.setContent(request.getContent());
-        // entity.setRooms(request.getRooms());
-        // entity.setMinPrice(request.getMinPrice());
-        // entity.setMaxPrice(request.getMaxPrice());
-        // entity.setLongitude(request.getLongitude());
-        // entity.setLatitude(request.getLatitude());
+        entity.setRooms(request.getRooms());
+        entity.setMinPrice(request.getMinPrice());
+        entity.setMaxPrice(request.getMaxPrice());
+        entity.setLongitude(request.getLongitude());
+        entity.setLatitude(request.getLatitude());
 
-        entity.setRooms(12);
-        entity.setMinPrice(BigDecimal.valueOf(1000000));
-        entity.setMaxPrice(BigDecimal.valueOf(2000000));
-        entity.setLongitude(105.0f);
-        entity.setLatitude(10.0f);
+        entity.setRooms(request.getRooms() != null ? request.getRooms() : 0);
+        entity.setMinPrice(request.getMinPrice() != null ? request.getMinPrice() : BigDecimal.ZERO);
+        entity.setMaxPrice(request.getMaxPrice() != null ? request.getMaxPrice() : BigDecimal.ZERO);
+        entity.setLongitude(request.getLongitude() != null ? request.getLongitude() : 0.0f);
+        entity.setLatitude(request.getLatitude() != null ? request.getLatitude() : 0.0f);
         String fullAdress = request.getAddress() + ", " +
                 (request.getWardId() != null ? wardRepository.findById(request.getWardId()).get().getName() : "") + ", "
                 +
@@ -142,71 +138,71 @@ public class DormitoryService implements IDormitoryService {
 
     @Override
     public Dormitory updateDormitory(Integer id, UpdateDormitoryRequest request) {
-        return dormitoryRepository.findById(id).map(dormitory -> {
-            // Check for duplicate name if name is being updated
-            if (request.getName() != null && !request.getName().equals(dormitory.getName())) {
-                Dormitory existingDormitory = dormitoryRepository.findByName(request.getName());
-                if (existingDormitory != null) {
-                    throw new DuplicateException("Dormitory name already exists");
-                }
-                dormitory.setName(request.getName());
+        Dormitory dormitory = dormitoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Dormitory not found with id: " + id));
 
-                // Update slug if name changes
-                String slug = SlugUtil.generateUniqueSlug(request.getName(),
-                        existingSlug -> dormitoryRepository.findBySlug(existingSlug) != null);
-                dormitory.setSlug(slug);
+        // Check for duplicate name if name is being updated
+        if (request.getName() != null && !request.getName().equals(dormitory.getName())) {
+            Dormitory existingDormitory = dormitoryRepository.findByName(request.getName());
+            if (existingDormitory != null) {
+                throw new DuplicateException("Dormitory name already exists");
             }
+            dormitory.setName(request.getName());
 
-            if (request.getAddress() != null) {
-                dormitory.setAddress(request.getAddress());
-            }
+            // Update slug if name changes
+            String slug = SlugUtil.generateUniqueSlug(request.getName(),
+                    existingSlug -> dormitoryRepository.findBySlug(existingSlug) != null);
+            dormitory.setSlug(slug);
+        }
 
-            if (request.getOwnerName() != null) {
-                dormitory.setOwnerName(request.getOwnerName());
-            }
-            if (request.getPhoneNumber() != null) {
-                dormitory.setPhoneNumber(request.getPhoneNumber());
-            }
-            if (request.getDescription() != null) {
-                dormitory.setDescription(request.getDescription());
-            }
-            if (request.getContent() != null) {
-                dormitory.setContent(request.getContent());
-            }
-            if (request.getRooms() != null) {
-                dormitory.setRooms(request.getRooms());
-            }
-            if (request.getMinPrice() != null) {
-                dormitory.setMinPrice(request.getMinPrice());
-            }
-            if (request.getMaxPrice() != null) {
-                dormitory.setMaxPrice(request.getMaxPrice());
-            }
-            if (request.getLongitude() != null) {
-                dormitory.setLongitude(request.getLongitude());
-            }
-            if (request.getLatitude() != null) {
-                dormitory.setLatitude(request.getLatitude());
-            }
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Dormitory name is required");
+        }
+        if (request.getAddress() == null || request.getAddress().trim().isEmpty()) {
+            throw new IllegalArgumentException("Dormitory address is required");
+        }
+        if (request.getPhoneNumber() == null || request.getPhoneNumber().trim().isEmpty()) {
+            throw new IllegalArgumentException("Phone number is required");
+        }
+        if (request.getMinPrice() != null && request.getMaxPrice() != null &&
+                request.getMinPrice().compareTo(request.getMaxPrice()) > 0) {
+            throw new IllegalArgumentException("Invalid price range");
+        }
 
-            // Update relationships
-            if (request.getWardId() != null) {
-                Optional<Ward> ward = wardRepository.findById(request.getWardId());
-                ward.ifPresent(dormitory::setWard);
-            }
+        dormitory.setAddress(request.getAddress());
+        dormitory.setOwnerName(request.getOwnerName());
+        dormitory.setPhoneNumber(request.getPhoneNumber());
+        dormitory.setDescription(request.getDescription());
+        dormitory.setContent(request.getContent());
+        dormitory.setRooms(request.getRooms() != null ? request.getRooms() : dormitory.getRooms());
+        dormitory.setMinPrice(request.getMinPrice() != null ? request.getMinPrice() : dormitory.getMinPrice());
+        dormitory.setMaxPrice(request.getMaxPrice() != null ? request.getMaxPrice() : dormitory.getMaxPrice());
+        dormitory.setLongitude(request.getLongitude() != null ? request.getLongitude() : dormitory.getLongitude());
+        dormitory.setLatitude(request.getLatitude() != null ? request.getLatitude() : dormitory.getLatitude());
 
-            if (request.getDistrictId() != null) {
-                Optional<District> district = districtRepository.findById(request.getDistrictId());
-                district.ifPresent(dormitory::setDistrict);
-            }
+        // Update relationships
+        if (request.getWardId() != null) {
+            Optional<Ward> ward = wardRepository.findById(request.getWardId());
+            ward.ifPresent(dormitory::setWard);
+        }
 
-            if (request.getProvinceId() != null) {
-                Optional<Province> province = provinceRepository.findById(request.getProvinceId());
-                province.ifPresent(dormitory::setProvince);
-            }
+        if (request.getDistrictId() != null) {
+            Optional<District> district = districtRepository.findById(request.getDistrictId());
+            district.ifPresent(dormitory::setDistrict);
+        }
 
-            return dormitoryRepository.save(dormitory);
-        }).orElseThrow(() -> new RuntimeException("Dormitory not found"));
+        if (request.getProvinceId() != null) {
+            Optional<Province> province = provinceRepository.findById(request.getProvinceId());
+            province.ifPresent(dormitory::setProvince);
+        }
+
+        String fullAddress = request.getAddress() + ", " +
+                (request.getWardId() != null ? wardRepository.findById(request.getWardId()).get().getName() : "") + ", " +
+                (request.getDistrictId() != null ? districtRepository.findById(request.getDistrictId()).get().getName() : "") + ", " +
+                (request.getProvinceId() != null ? provinceRepository.findById(request.getProvinceId()).get().getName() : "");
+        dormitory.setFullAddress(fullAddress);
+
+        return dormitoryRepository.save(dormitory);
     }
 
     @Override
