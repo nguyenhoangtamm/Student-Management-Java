@@ -1,7 +1,6 @@
 package com.tam.StudentManagement.Request.Notification;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -16,7 +15,4 @@ public class CreateNotificationRequest {
 
     @NotBlank(message = "Type is required")
     private Integer type;
-
-    @NotNull(message = "Student ID is required")
-    private Integer studentId;
 }

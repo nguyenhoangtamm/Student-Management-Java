@@ -24,7 +24,7 @@ public class DormitoryController {
     @Autowired
     private IDormitoryService dormitoryService;
 
-    @GetMapping
+    @GetMapping("/get-all")
     public ResponseEntity<ApiResponse<List<Dormitory>>> getAllDormitories() {
         List<Dormitory> dormitories = dormitoryService.getAllDormitories();
         return ResponseEntity.ok(ApiResponse.success("Get dormitories successfully", dormitories));

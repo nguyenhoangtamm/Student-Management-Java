@@ -19,13 +19,13 @@ public class NotificationController {
     @Autowired
     private INotificationService notificationService;
 
-    @GetMapping
+    @GetMapping("/get-all")
     public ResponseEntity<ApiResponse<List<Notification>>> getAllNotifications() {
         List<Notification> notifications = notificationService.getAllNotifications();
         return ResponseEntity.ok(ApiResponse.success("Get notifications successfully", notifications));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get-by-id/{id}")
     public ResponseEntity<ApiResponse<Notification>> getNotificationById(@PathVariable Integer id) {
         return notificationService.getNotificationById(id)
                 .map(notification -> ResponseEntity
@@ -33,14 +33,22 @@ public class NotificationController {
                 .orElse(ResponseEntity.ok(ApiResponse.error("Notification not found")));
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ApiResponse<CreateNotificationDto>> createNotification(
             @Valid @RequestBody CreateNotificationRequest request) {
         CreateNotificationDto createdNotification = notificationService.createNotification(request);
         return ResponseEntity.ok(ApiResponse.success("Create notification successfully", createdNotification));
     }
+    // @PostMapping("/create")
+    // public ResponseEntity<ApiResponse<String>> createNotification(
+    // @Valid @RequestBody CreateNotificationRequest request) {
+    // // CreateNotificationDto createdNotification =
+    // notificationService.createNotification(request);
+    // return ResponseEntity.ok(ApiResponse.success("Create notification
+    // successfully"));
+    // }
 
-    @PutMapping("/{id}")
+    @PostMapping("/update/{id}")
     public ResponseEntity<ApiResponse<Notification>> updateNotification(
             @PathVariable Integer id,
             @Valid @RequestBody UpdateNotificationRequest request) {
@@ -48,32 +56,40 @@ public class NotificationController {
         return ResponseEntity.ok(ApiResponse.success("Update notification successfully", updatedNotification));
     }
 
-    @DeleteMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<ApiResponse<String>> deleteNotification(@PathVariable Integer id) {
         String message = notificationService.deleteNotification(id);
         return ResponseEntity.ok(ApiResponse.success("Delete notification successfully", message));
     }
 
     // @GetMapping("/pagination")
-    // public ResponseEntity<ApiResponse<PaginationDto<NotificationDto>>> getNotificationsByPagination(
-    //         @RequestParam(defaultValue = "1") int pageNumber,
-    //         @RequestParam(defaultValue = "10") int pageSize,
-    //         @RequestParam(required = false) String keyword) {
-    //     PaginationDto<NotificationDto> data = notificationService.getNotificationsByPagination(pageNumber, pageSize,
-    //             keyword);
-    //     return ResponseEntity.ok(ApiResponse.success("Get notifications by pagination successfully", data));
+    // public ResponseEntity<ApiResponse<PaginationDto<NotificationDto>>>
+    // getNotificationsByPagination(
+    // @RequestParam(defaultValue = "1") int pageNumber,
+    // @RequestParam(defaultValue = "10") int pageSize,
+    // @RequestParam(required = false) String keyword) {
+    // PaginationDto<NotificationDto> data =
+    // notificationService.getNotificationsByPagination(pageNumber, pageSize,
+    // keyword);
+    // return ResponseEntity.ok(ApiResponse.success("Get notifications by pagination
+    // successfully", data));
     // }
 
     // @GetMapping("/student/{studentId}/unread")
-    // public ResponseEntity<ApiResponse<List<Notification>>> getUnreadNotificationsByStudentId(
-    //         @PathVariable Integer studentId) {
-    //     List<Notification> notifications = notificationService.getUnreadNotificationsByStudentId(studentId);
-    //     return ResponseEntity.ok(ApiResponse.success("Get unread notifications successfully", notifications));
+    // public ResponseEntity<ApiResponse<List<Notification>>>
+    // getUnreadNotificationsByStudentId(
+    // @PathVariable Integer studentId) {
+    // List<Notification> notifications =
+    // notificationService.getUnreadNotificationsByStudentId(studentId);
+    // return ResponseEntity.ok(ApiResponse.success("Get unread notifications
+    // successfully", notifications));
     // }
 
     // @PutMapping("/{id}/read")
-    // public ResponseEntity<ApiResponse<String>> markNotificationAsRead(@PathVariable Integer id) {
-    //     String message = notificationService.markNotificationAsRead(id);
-    //     return ResponseEntity.ok(ApiResponse.success("Mark notification as read successfully", message));
+    // public ResponseEntity<ApiResponse<String>>
+    // markNotificationAsRead(@PathVariable Integer id) {
+    // String message = notificationService.markNotificationAsRead(id);
+    // return ResponseEntity.ok(ApiResponse.success("Mark notification as read
+    // successfully", message));
     // }
 }

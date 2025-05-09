@@ -6,6 +6,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.time.LocalDateTime;
@@ -43,14 +44,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(NoHandlerFoundException ex) {
         ErrorResponse error = new ErrorResponse(
-                500,
-                "INTERNAL_SERVER_ERROR",
-                "An unexpected error occurred",
-                LocalDateTime.now().format(formatter));
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+                404,
+                "NOT_FOUND",
+                "The requested URL " + ex.getRequestURL() + " was not found on this server.",
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -62,4 +63,15 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now().format(formatter));
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
+        ErrorResponse error = new ErrorResponse(
+                500,
+                "INTERNAL_SERVER_ERROR",
+                "An unexpected error occurred",
+                LocalDateTime.now().format(formatter));
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
