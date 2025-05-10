@@ -21,9 +21,7 @@ public interface INotificationService {
 
     String deleteNotification(Integer id);
 
-    // PaginationDto<NotificationDto> getNotificationsByPagination(int pageNumber, int pageSize, String keyword);
+    PaginationDto<NotificationDto> getNotificationsByPagination(int pageNumber, int pageSize, String keyword);
 
-    // List<Notification> getUnreadNotificationsByStudentId(Integer studentId);
-
-    // String markNotificationAsRead(Integer id);
+    String readNotification (Integer id);
 }

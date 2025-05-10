@@ -10,5 +10,6 @@ import java.util.List;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Integer> {
-  
+    Page<Notification> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword,
+            Pageable pageable);
 }
