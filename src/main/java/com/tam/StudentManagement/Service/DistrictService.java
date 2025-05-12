@@ -1,7 +1,6 @@
 package com.tam.StudentManagement.Service;
 
 import com.tam.StudentManagement.Dto.District.DistrictDto;
-import com.tam.StudentManagement.Dto.Province.ProvinceDto;
 import com.tam.StudentManagement.Dto.District.CreateDistrictDto;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Common.PaginationInfo;

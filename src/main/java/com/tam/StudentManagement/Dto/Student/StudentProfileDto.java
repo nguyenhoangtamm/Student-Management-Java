@@ -3,7 +3,6 @@ package com.tam.StudentManagement.Dto.Student;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor

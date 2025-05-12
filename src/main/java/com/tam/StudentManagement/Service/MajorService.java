@@ -2,11 +2,9 @@ package com.tam.StudentManagement.Service;
 
 import com.tam.StudentManagement.Dto.Major.CreateMajorDto;
 import com.tam.StudentManagement.Dto.Major.MajorDto;
-import com.tam.StudentManagement.Dto.StudentClass.StudentClassDto;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Common.PaginationInfo;
 import com.tam.StudentManagement.Model.Major;
-import com.tam.StudentManagement.Model.StudentClass;
 import com.tam.StudentManagement.Repository.MajorRepository;
 import com.tam.StudentManagement.Request.Major.CreateMajorRequest;
 import com.tam.StudentManagement.Request.Major.UpdateMajorRequest;

@@ -3,7 +3,6 @@ package com.tam.StudentManagement.Dto.Student;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.AllArgsConstructor;

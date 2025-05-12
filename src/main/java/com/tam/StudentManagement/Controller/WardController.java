@@ -9,7 +9,6 @@ import com.tam.StudentManagement.Request.Ward.UpdateWardRequest;
 import com.tam.StudentManagement.Response.ApiResponse;
 import com.tam.StudentManagement.Service.Interface.IWardService;
 
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -4,7 +4,6 @@ import com.tam.StudentManagement.Dto.Auth.LoginDto;
 import com.tam.StudentManagement.Dto.Auth.UserLogin;
 import com.tam.StudentManagement.Dto.Auth.JwtAuthResponse;
 import com.tam.StudentManagement.Model.Student;
-import com.tam.StudentManagement.Repository.StudentRepository;
 import com.tam.StudentManagement.Security.JwtTokenProvider;
 import com.tam.StudentManagement.Security.StudentDetails;
 
@@ -27,9 +26,6 @@ public class AuthServiceImpl implements AuthService {
 
         @Autowired
         private JwtTokenProvider tokenProvider;
-
-        @Autowired
-        private StudentRepository studentRepository;
 
         @Override
         public JwtAuthResponse login(LoginDto loginDto, HttpServletResponse response) {

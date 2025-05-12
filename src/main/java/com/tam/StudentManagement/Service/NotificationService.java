@@ -10,7 +10,6 @@ import com.tam.StudentManagement.Model.Student;
 import com.tam.StudentManagement.Model.StudentNotification;
 import com.tam.StudentManagement.Repository.NotificationRepository;
 import com.tam.StudentManagement.Repository.StudentNotificationRepository;
-import com.tam.StudentManagement.Repository.StudentRepository;
 import com.tam.StudentManagement.Request.Notification.CreateNotificationRequest;
 import com.tam.StudentManagement.Request.Notification.UpdateNotificationRequest;
 import com.tam.StudentManagement.Security.StudentDetails;
