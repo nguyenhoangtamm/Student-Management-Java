@@ -19,10 +19,13 @@ import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Common.PaginationInfo;
 import com.tam.StudentManagement.Dto.Student.CreateStudentDto;
 import com.tam.StudentManagement.Dto.Student.OffCampusDto;
+import com.tam.StudentManagement.Dto.Student.StudentContractDto;
 import com.tam.StudentManagement.Dto.Student.StudentDashboardDto;
 import com.tam.StudentManagement.Model.*;
 import com.tam.StudentManagement.Repository.*;
 import com.tam.StudentManagement.Request.Student.CreateStudentRequest;
+import com.tam.StudentManagement.Request.Student.SaveContractRequest;
+import com.tam.StudentManagement.Request.Student.UpdateOffCampusRequest;
 import com.tam.StudentManagement.Request.Student.UpdateStudentRequest;
 import com.tam.StudentManagement.Security.StudentDetails;
 import com.tam.StudentManagement.Service.Interface.IStudentService;
@@ -37,6 +40,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,8 +74,8 @@ public class StudentService implements IStudentService {
     @Override
     public List<Student> getAllStudents() {
         return studentRepository.findAll().stream()
-            .filter(student -> !student.getIsDelete())
-            .collect(Collectors.toList());
+                .filter(student -> !student.getIsDelete())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -150,11 +154,10 @@ public class StudentService implements IStudentService {
         // district.ifPresent(entity::setDistrict);
         // }
 
-        
         // String fullAddress = request.getAddress() + "/ "
-        //         + provinceRepository.findById(request.getProvinceId()).get().getName() + "/ "
-        //         + districtRepository.findById(request.getdistrictId()).get().getName() + "/ "
-        //         + wardRepository.findById(request.getWardId()).get().getName();
+        // + provinceRepository.findById(request.getProvinceId()).get().getName() + "/ "
+        // + districtRepository.findById(request.getdistrictId()).get().getName() + "/ "
+        // + wardRepository.findById(request.getWardId()).get().getName();
 
         // Set province relationship
         if (request.getProvinceId() != null) {
@@ -366,7 +369,6 @@ public class StudentService implements IStudentService {
                 notificationDtos.add(new StudentNotificationDto(
                         notification.getId(),
                         notification.getTitle(),
-
                         notification.getSlug()));
             }
 
@@ -464,4 +466,97 @@ public class StudentService implements IStudentService {
         return studentStatusDto;
 
     }
+
+    @Override
+    public StudentContractDto getContract() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof StudentDetails) {
+            StudentDetails studentDetails = (StudentDetails) authentication.getPrincipal();
+            Student student = studentRepository.findById(studentDetails.getStudent().getId())
+                    .orElseThrow(() -> new RuntimeException("Student not found"));
+
+            ContractStatusEnum contractStatus = student.getResidenceStatus() != null
+                    ? ContractStatusEnum.fromValue(student.getResidenceStatus())
+                    : ContractStatusEnum.CHUA_KY;
+
+            StudentContractDto contractDto = new StudentContractDto();
+            contractDto.setDormitoryId(student.getDormitory().getId());
+            contractDto.setPrice(student.getMonthlyRent() != null ? student.getMonthlyRent().toString() : null);
+            contractDto.setRoom(student.getRoom());
+            contractDto.setStatus(contractStatus.getValue());
+
+            return contractDto;
+        }
+        throw new RuntimeException("Authentication failed or user not logged in");
+    }
+
+    @Override
+    public String saveContract(SaveContractRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof StudentDetails) {
+            StudentDetails studentDetails = (StudentDetails) authentication.getPrincipal();
+            Student student = studentRepository.findById(studentDetails.getStudent().getId())
+                    .orElseThrow(() -> new RuntimeException("Student not found"));
+
+            if (request.getStatus() == null) {
+                throw new RuntimeException("Status cannot be null");
+            }
+            student.setResidenceStatus(request.getStatus());
+
+            if (request.getStatus() == 2) {
+                student.setResidenceStatus(request.getStatus());
+                student.setMonthlyRent(new BigDecimal(request.getPrice()));
+                student.setRoom(request.getRoom());
+
+                Dormitory dormitory = dormitoryRepository.findById(request.getDormitoryId())
+                        .filter(d -> !d.getIsDelete())
+                        .orElseThrow(() -> new RuntimeException("Dormitory not found or is marked as deleted"));
+                student.setDormitory(dormitory);
+            }
+            studentRepository.save(student);
+            return "Contract saved successfully";
+        }
+
+        throw new RuntimeException("Authentication failed or user not logged in");
+    }
+
+    // @Override
+    // public StudentStatusDto updateOffCampus(UpdateOffCampusRequest request) {
+    // Authentication authentication =
+    // SecurityContextHolder.getContext().getAuthentication();
+    // if (authentication != null && authentication.isAuthenticated()
+    // && authentication.getPrincipal() instanceof StudentDetails) {
+    // StudentDetails studentDetails = (StudentDetails)
+    // authentication.getPrincipal();
+    // Student student =
+    // studentRepository.findById(studentDetails.getStudent().getId())
+    // .orElseThrow(() -> new RuntimeException("Student not found"));
+
+    // student.setResidenceStatus(request.getResidenceStatus());
+    // student.setFullAddress(request.getFullAddress());
+    // student.setRoom(request.getRoom());
+    // student.setMonthlyRent(request.getMonthlyRent());
+    // student.setContractStatus(request.getContractStatus());
+
+    // if (request.getDormitoryId() != null) {
+    // Optional<Dormitory> dormitory =
+    // dormitoryRepository.findById(request.getDormitoryId());
+    // dormitory.ifPresent(student::setDormitory);
+    // }
+
+    // studentRepository.save(student);
+
+    // int totalStudents = (int) studentRepository.count();
+    // int totalDormitories = (int) dormitoryRepository.count();
+    // int confirmedStudents = studentRepository.countByResidenceStatus(1);
+    // int unconfirmedStudents = studentRepository.countByResidenceStatus(0);
+
+    // return new StudentStatusDto(
+    // totalStudents, totalDormitories, confirmedStudents, unconfirmedStudents
+    // );
+    // }
+    // throw new RuntimeException("Authentication failed or user not logged in");
+    // }
 }

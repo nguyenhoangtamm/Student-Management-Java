@@ -2,8 +2,8 @@ package com.tam.StudentManagement.Enum.Student;
 
 public enum ResidenceStatusEnum {
     TRONG_KTX(1, "Trong KTX"),
-    NGOAI_KTX(2, "Ngoài KTX"),
-    VE_NHA(3, "Về nhà");
+    NGOAI_TRU(2, "Ngoại trú"),
+    O_NHA(3, "Ở nhà");
 
     private final int value;
     private final String label;

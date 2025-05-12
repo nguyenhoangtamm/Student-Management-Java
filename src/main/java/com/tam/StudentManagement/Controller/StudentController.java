@@ -4,12 +4,15 @@ import com.tam.StudentManagement.Dto.Student.StudentDto;
 import com.tam.StudentManagement.Dto.Student.StudentDashboardDto;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
 import com.tam.StudentManagement.Dto.Student.CreateStudentDto;
+import com.tam.StudentManagement.Dto.Student.StudentContractDto;
 import com.tam.StudentManagement.Dto.Student.StudentHeaderInfoDto;
 import com.tam.StudentManagement.Dto.Student.StudentProfileDto;
 import com.tam.StudentManagement.Dto.Student.StudentStatusDto;
 import com.tam.StudentManagement.Dto.Student.StudentStatisticsDto;
 import com.tam.StudentManagement.Model.Student;
 import com.tam.StudentManagement.Request.Student.CreateStudentRequest;
+import com.tam.StudentManagement.Request.Student.SaveContractRequest;
+import com.tam.StudentManagement.Request.Student.UpdateOffCampusRequest;
 import com.tam.StudentManagement.Request.Student.UpdateStudentRequest;
 import com.tam.StudentManagement.Response.ApiResponse;
 import com.tam.StudentManagement.Service.Interface.IStudentService;
@@ -92,20 +95,19 @@ public class StudentController {
                 profile));
     }
 
-    // @GetMapping("/contract")
-    // public ResponseEntity<ApiResponse<StudentContractDto>> getContract() {
-    // StudentContractDto contract = studentService.getContract();
-    // return ResponseEntity.ok(ApiResponse.success("Get contract successfully",
-    // contract));
-    // }
+    @GetMapping("/contract")
+    public ResponseEntity<ApiResponse<StudentContractDto>> getContract() {
+        StudentContractDto contract = studentService.getContract();
+        return ResponseEntity.ok(ApiResponse.success("Get contract successfully",
+                contract));
+    }
 
-    // @PutMapping("/off-campus")
-    // public ResponseEntity<ApiResponse<StudentStatusDto>> updateOffCampus(
-    // @Valid @RequestBody UpdateOffCampusRequest request) {
-    // StudentStatusDto result = studentService.updateOffCampus(request);
-    // return ResponseEntity.ok(ApiResponse.success("Update off campus
-    // successfully", result));
-    // }
+    @PostMapping("/save-contract")
+    public ResponseEntity<ApiResponse<String>> updateOffCampus(
+            @Valid @RequestBody SaveContractRequest request) {
+        String result = studentService.saveContract(request);
+        return ResponseEntity.ok(ApiResponse.success("Update off campus successfully", result));
+    }
 
     @GetMapping("/status")
     public ResponseEntity<ApiResponse<StudentStatusDto>> getStatus() {

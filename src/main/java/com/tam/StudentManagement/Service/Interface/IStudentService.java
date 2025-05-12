@@ -13,6 +13,7 @@ import com.tam.StudentManagement.Dto.Student.StudentStatisticsDto;
 import com.tam.StudentManagement.Dto.Student.StudentNotificationDto;
 import com.tam.StudentManagement.Model.Student;
 import com.tam.StudentManagement.Request.Student.CreateStudentRequest;
+import com.tam.StudentManagement.Request.Student.SaveContractRequest;
 import com.tam.StudentManagement.Request.Student.UpdateStudentRequest;
 import com.tam.StudentManagement.Request.Student.UpdateOffCampusRequest;
 import org.springframework.data.domain.Page;
@@ -39,11 +40,11 @@ public interface IStudentService {
 
     StudentProfileDto getProfile();
 
-    // StudentContractDto getContract();
+    StudentContractDto getContract();
+    String saveContract(SaveContractRequest request);
 
     // StudentStatusDto updateOffCampus(UpdateOffCampusRequest request);
 
-    // StudentStatusDto getStatus();
 
     // StudentStatisticsDto getStatistics();
 

@@ -3,15 +3,12 @@ package com.tam.StudentManagement.Dto.Student;
 import lombok.Data;
 import java.time.LocalDate;
 
+import com.tam.StudentManagement.Model.Dormitory;
+
 @Data
 public class StudentContractDto {
-    private String contractId;
-    private String studentId;
-    private String fullName;
-    private String contractType;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private String status;
-    private String content;
-    private String signature;
+    private Integer dormitoryId;
+    private String price;
+    private String room;
+    private Integer status;
 }
