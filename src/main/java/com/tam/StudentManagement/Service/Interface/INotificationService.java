@@ -24,4 +24,5 @@ public interface INotificationService {
     PaginationDto<NotificationDto> getNotificationsByPagination(int pageNumber, int pageSize, String keyword);
 
     String readNotification (Integer id);
+    String sendNotification (Integer id);
 }

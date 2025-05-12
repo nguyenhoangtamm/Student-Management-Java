@@ -77,4 +77,9 @@ public class NotificationController {
         String message = notificationService.readNotification(id);
         return ResponseEntity.ok(ApiResponse.success("Read notification successfully", message));
     }
+    @PostMapping("/send/{id}")
+    public ResponseEntity<ApiResponse<String>> sendNotification(@PathVariable Integer id) {
+        String message = notificationService.sendNotification(id);
+        return ResponseEntity.ok(ApiResponse.success("Send notification successfully", message));
+    }
 }

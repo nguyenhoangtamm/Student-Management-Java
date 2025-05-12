@@ -35,9 +35,6 @@ public class NotificationService implements INotificationService {
     private NotificationRepository notificationRepository;
 
     @Autowired
-    private StudentRepository studentRepository;
-
-    @Autowired
     private StudentNotificationRepository studentNotificationRepository;
 
     @Override
@@ -69,7 +66,13 @@ public class NotificationService implements INotificationService {
         entity.setContent(request.getContent());
         entity.setType(request.getType());
         entity.setSlug(slug);
-        entity.setDelete(false);
+        entity.setViews(0);
+        entity.setSend(false);
+        entity.setIsDelete(false);
+        entity.setCreatedAt(java.time.Instant.ofEpochMilli(System.currentTimeMillis())
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDateTime());
+
         notificationRepository.save(entity);
 
         return new CreateNotificationDto(entity);
@@ -77,28 +80,33 @@ public class NotificationService implements INotificationService {
 
     @Override
     public Notification updateNotification(Integer id, UpdateNotificationRequest request) {
-        return notificationRepository.findById(id).map(notification -> {
-            if (request.getTitle() != null) {
-                notification.setTitle(request.getTitle());
-            }
+        return notificationRepository.findById(id)
+                .filter(notification -> !notification.getIsDelete())
+                .map(notification -> {
+                    if (request.getTitle() != null) {
+                        notification.setTitle(request.getTitle());
+                        String slug = SlugUtil.toSlug(request.getTitle());
+                        notification.setSlug(slug);
+                    }
 
-            if (request.getContent() != null) {
-                notification.setContent(request.getContent());
-            }
+                    if (request.getContent() != null) {
+                        notification.setContent(request.getContent());
+                    }
 
-            if (request.getType() != null) {
-                notification.setType(request.getType());
-            }
+                    if (request.getType() != null) {
+                        notification.setType(request.getType());
+                    }
 
-            return notificationRepository.save(notification);
-        }).orElseThrow(() -> new NotFoundException("Notification not found"));
+                    return notificationRepository.save(notification);
+                }).orElseThrow(() -> new NotFoundException("Notification not found or has been deleted"));
     }
 
     @Override
     public String deleteNotification(Integer id) {
         Notification entity = notificationRepository.findById(id)
+                .filter(notification -> !notification.getIsDelete())
                 .orElseThrow(() -> new NotFoundException("Notification not found with id: " + id));
-        entity.setDelete(true);
+        entity.setIsDelete(true);
         notificationRepository.save(entity);
         return "Notification marked as deleted successfully";
     }
@@ -116,6 +124,9 @@ public class NotificationService implements INotificationService {
         }
 
         List<NotificationDto> notificationDtos = notificationPage.getContent().stream()
+                .filter(notifica -> !notifica.getIsDelete())
+                .sorted((d1, d2) -> d1.getTitle().compareTo(d2.getTitle()))
+
                 .map(NotificationDto::new)
                 .collect(Collectors.toList());
 
@@ -139,12 +150,24 @@ public class NotificationService implements INotificationService {
         }
         StudentNotification studentNotification = new StudentNotification();
         Notification notification = notificationRepository.findById(id)
+                .filter(notifica -> !notifica.getIsDelete())
                 .orElseThrow(() -> new NotFoundException("Notification not found with id: " + id));
         studentNotification.setNotification(notification);
         studentNotification.setRead(true);
         studentNotification.setStudent(student);
         studentNotificationRepository.save(studentNotification);
         return "Notification marked as read successfully";
+    }
+
+    @Override
+    public String sendNotification(Integer id) {
+        Notification notification = notificationRepository.findById(id)
+                .filter(notifica -> !notifica.getIsDelete())
+                .orElseThrow(() -> new NotFoundException("Notification not found with id: " + id));
+        notification.setSend(true);
+
+        notificationRepository.save(notification);
+        return "Notification sent successfully";
     }
 
 }

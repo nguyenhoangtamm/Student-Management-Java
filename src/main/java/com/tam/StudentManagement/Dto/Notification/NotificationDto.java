@@ -13,15 +13,15 @@ public class NotificationDto {
     private String title;
     private String content;
     private Integer type;
-    private Boolean isRead;
-    private Integer studentId;
-    private String createdAt;
+    private Integer views;
+    private boolean send;
 
     public NotificationDto(Notification entity) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();
         this.type = entity.getType();
-        this.createdAt = entity.getCreatedAt().toString();
+        this.views = entity.getViews();
+        this.send = entity.isSend();
     }
 }

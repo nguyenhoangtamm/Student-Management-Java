@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import com.tam.StudentManagement.Model.Dormitory;
-import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
