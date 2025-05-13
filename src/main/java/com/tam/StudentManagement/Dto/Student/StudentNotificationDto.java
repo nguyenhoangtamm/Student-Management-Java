@@ -11,10 +11,9 @@ import lombok.NoArgsConstructor;
 public class StudentNotificationDto {
     private Integer id;
     private String title;
-    // private String content;
-    // private Integer type;
-    // private LocalDateTime createdAt;
-    // private Boolean isRead;
     private String slug;
+    private String content;
+    private String date;
+    private Integer type;
     
 }

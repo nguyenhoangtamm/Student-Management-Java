@@ -292,35 +292,55 @@ public class StudentService implements IStudentService {
 
     @Override
     public StudentDashboardDto getDashboard() {
-        Student student = new Student();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()
                 && authentication.getPrincipal() instanceof StudentDetails) {
             StudentDetails studentDetails = (StudentDetails) authentication.getPrincipal();
-            student = studentDetails.getStudent();
-        }
-        StudentDashboardDto.OffCampusInfo offCampusInfo = new StudentDashboardDto.OffCampusInfo(
-                student.getDormitory() != null ? student.getDormitory().getName() : "KTX Đại học Đồng Tháp",
-                student.getContractStatus() != null && student.getContractStatus() == 1 ? "Đã ký hợp đồng"
-                        : "Chưa ký hợp đồng",
-                "2025-03-09T15:00:50.000000Z",
-                student.getRoom(),
-                student.getFullAddress());
-        GenderEnum gender = GenderEnum.fromValue(student.getGender());
+            Integer studentId = studentDetails.getStudent().getId();
 
-        return new StudentDashboardDto(
-                student.getCode(),
-                student.getFullName(),
-                gender.getLabel(),
-                student.getDateOfBirth().toString(),
-                student.getBirthplace(),
-                student.getFaculty(),
-                student.getEmail(),
-                student.getAvatar(),
-                1, // TODO: Implement actual unread notifications count
-                offCampusInfo,
-                new Object[] {} // TODO: Implement actual notifications
-        );
+            // Lấy lại từ DB để đảm bảo fetch được notifications
+            Student student = studentRepository.findById(studentId)
+                    .orElseThrow(() -> new RuntimeException("Student not found"));
+
+            StudentDashboardDto.OffCampusInfo offCampusInfo = new StudentDashboardDto.OffCampusInfo(
+                    student.getDormitory() != null ? student.getDormitory().getName() : "KTX Đại học Đồng Tháp",
+                    student.getContractStatus() != null && student.getContractStatus() == 1 ? "Đã ký hợp đồng"
+                            : "Chưa ký hợp đồng",
+                    "2025-03-09T15:00:50.000000Z",
+                    student.getRoom(),
+                    student.getFullAddress());
+            GenderEnum gender = GenderEnum.fromValue(student.getGender());
+            List<StudentNotificationDto> notifications = new ArrayList<>();
+            for (StudentNotification studentNotification : student.getStudentNotifications()) {
+                Notification notification = studentNotification.getNotification();
+                notifications.add(new StudentNotificationDto(
+                        notification.getId(),
+                        notification.getTitle(),
+                        notification.getSlug(),
+                        notification.getContent(),
+                        notification.getCreatedAt().toString(),
+                        notification.getType()));
+            }
+
+            return new StudentDashboardDto(
+                    student.getCode(),
+                    student.getFullName(),
+                    gender.getLabel(),
+                    student.getDateOfBirth().toString(),
+                    student.getBirthplace(),
+                    student.getFaculty(),
+                    student.getEmail(),
+                    student.getAvatar(),
+                    notifications.size(),
+                    offCampusInfo,
+                    notifications
+
+            );
+
+        }
+        // Trường hợp không đăng nhập hoặc lỗi xác thực
+        return new StudentDashboardDto(null, null, null, null, null, null, null, null, 0,
+                new StudentDashboardDto.OffCampusInfo(), new ArrayList<>());
     }
 
     @Override
@@ -369,7 +389,11 @@ public class StudentService implements IStudentService {
                 notificationDtos.add(new StudentNotificationDto(
                         notification.getId(),
                         notification.getTitle(),
-                        notification.getSlug()));
+                        notification.getSlug(),
+                        notification.getContent(),
+                        notification.getCreatedAt().toString(),
+                        notification.getType()));
+
             }
 
             return new StudentHeaderInfoDto(student.getFullName(), student.getAvatar(), notificationDtos);

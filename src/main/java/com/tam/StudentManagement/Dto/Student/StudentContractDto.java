@@ -1,9 +1,7 @@
 package com.tam.StudentManagement.Dto.Student;
 
 import lombok.Data;
-import java.time.LocalDate;
 
-import com.tam.StudentManagement.Model.Dormitory;
 
 @Data
 public class StudentContractDto {

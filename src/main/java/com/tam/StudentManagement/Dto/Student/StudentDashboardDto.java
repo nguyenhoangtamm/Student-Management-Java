@@ -2,6 +2,9 @@ package com.tam.StudentManagement.Dto.Student;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 
 @Data
@@ -18,7 +21,7 @@ public class StudentDashboardDto {
     private String avatar;
     private Integer unreadNotifications;
     private OffCampusInfo offCampusInfo;
-    private Object[] notifications;
+    private List<StudentNotificationDto> notifications;
 
     @Data
     @NoArgsConstructor

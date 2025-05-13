@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 500,
                 "INTERNAL_SERVER_ERROR",
-                "An unexpected error occurred",
+                ex.getMessage(), // Trả về chi tiết lỗi từ Exception
                 LocalDateTime.now().format(formatter));
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
