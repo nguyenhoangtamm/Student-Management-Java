@@ -240,7 +240,7 @@ public class DormitoryService implements IDormitoryService {
         PaginationInfo paginationInfo = new PaginationInfo(
                 pageNumber,
                 pageSize,
-                dormitoryPage.getTotalElements() / pageSize,
+                dormitoryPage.getTotalPages(),
                 dormitoryPage.getTotalPages());
 
         return new PaginationDto<DormitoryDto>(dormitoryDtos, paginationInfo);
