@@ -100,8 +100,24 @@ public class StudentService implements IStudentService {
         if (exitEntity != null) {
             throw new DuplicateException("Phone number already exists");
         }
-        String provinceName = provinceRepository.findById(request.getProvinceId()).get().getName();
+        final String fullAddress;
+        if (request.getWardId() != null && request.getDistrictId() != null
+                && request.getProvinceId() != null && request.getAddress() != null) {
+            String address = request.getAddress() != null ? request.getAddress() : "";
+            String provinceName = request.getProvinceId() != null
+                    ? provinceRepository.findById(request.getProvinceId()).map(Province::getName).orElse("")
+                    : "";
+            String districtName = request.getDistrictId() != null
+                    ? districtRepository.findById(request.getDistrictId()).map(District::getName).orElse("")
+                    : "";
+            String wardName = request.getWardId() != null
+                    ? wardRepository.findById(request.getWardId()).map(Ward::getName).orElse("")
+                    : "";
 
+            fullAddress = address + ", " + wardName + ", " + districtName + ", " + provinceName;
+        } else {
+            fullAddress = ""; // Gán giá trị mặc định nếu điều kiện không thỏa mãn
+        }
         Student entity = new Student();
         entity.setCode(request.getCode());
         entity.setFullName(request.getFullName());
@@ -130,8 +146,8 @@ public class StudentService implements IStudentService {
         entity.setPhoneNumber(request.getPhoneNumber());
         entity.setEmail(request.getEmail());
         // entity.setEducationLevel(request.getEducationLevel());
-        entity.setResidenceStatus(0);
-        entity.setStatus(0);
+        entity.setResidenceStatus(1);
+        entity.setStatus(1);
         entity.setAcademicYear(request.getAcademicYear());
         // entity.setStatus(request.getStatus());
         entity.setIsAdmin(false);
@@ -140,7 +156,9 @@ public class StudentService implements IStudentService {
         // entity.setContractStatus(request.getContractStatus());
         // entity.setAddress(request.getAddress());
         // entity.setFullAddress(request.getFullAddress());
-        entity.setBirthplace(provinceName);
+        entity.setBirthplace(request.getProvinceId() != null
+                ? provinceRepository.findById(request.getProvinceId()).map(Province::getName).orElse("")
+                : "");
         // // Set ward relationship
         // if (request.getWardId() != null) {
         // Optional<Ward> ward = wardRepository.findById(request.getWardId());
@@ -154,16 +172,28 @@ public class StudentService implements IStudentService {
         // district.ifPresent(entity::setDistrict);
         // }
 
-        // String fullAddress = request.getAddress() + "/ "
-        // + provinceRepository.findById(request.getProvinceId()).get().getName() + "/ "
-        // + districtRepository.findById(request.getdistrictId()).get().getName() + "/ "
-        // + wardRepository.findById(request.getWardId()).get().getName();
+        entity.setAddress(request.getAddress());
+        entity.setFullAddress(fullAddress);
+        if (request.getWardId() != null) {
+            Optional<Ward> ward = wardRepository.findById(request.getWardId());
+            ward.ifPresent(entity::setWard);
+        }
+        if (request.getDistrictId() != null) {
+            Optional<District> district = districtRepository.findById(request.getDistrictId());
+            district.ifPresent(entity::setDistrict);
+        }
 
+        if (request.getProvinceId() != null) {
+            Optional<Province> province = provinceRepository.findById(request.getProvinceId());
+            province.ifPresent(entity::setProvince);
+        }
         // Set province relationship
         if (request.getProvinceId() != null) {
             Optional<Province> province = provinceRepository.findById(request.getProvinceId());
             province.ifPresent(entity::setProvince);
         }
+        String password = passwordEncoder.encode(request.getCode());
+        entity.setPassword(password);
         studentRepository.save(entity);
 
         return new CreateStudentDto(entity);
@@ -186,7 +216,24 @@ public class StudentService implements IStudentService {
         if (exitEntity != null && exitEntity.getPhoneNumber() != studentUpdate.getPhoneNumber()) {
             throw new DuplicateException("Phone number already exists");
         }
-        String provinceName = provinceRepository.findById(studentDetails.getProvinceId()).get().getName();
+        final String fullAddress;
+        if (studentDetails.getWardId() != null && studentDetails.getDistrictId() != null
+                && studentDetails.getProvinceId() != null && studentDetails.getAddress() != null) {
+            String address = studentDetails.getAddress() != null ? studentDetails.getAddress() : "";
+            String provinceName = studentDetails.getProvinceId() != null
+                    ? provinceRepository.findById(studentDetails.getProvinceId()).map(Province::getName).orElse("")
+                    : "";
+            String districtName = studentDetails.getDistrictId() != null
+                    ? districtRepository.findById(studentDetails.getDistrictId()).map(District::getName).orElse("")
+                    : "";
+            String wardName = studentDetails.getWardId() != null
+                    ? wardRepository.findById(studentDetails.getWardId()).map(Ward::getName).orElse("")
+                    : "";
+
+            fullAddress = address + ", " + wardName + ", " + districtName + ", " + provinceName;
+        } else {
+            fullAddress = ""; // Gán giá trị mặc định nếu điều kiện không thỏa mãn
+        }
 
         return studentRepository.findById(id).map(student -> {
             if (studentDetails.getFullName() != null) {
@@ -256,22 +303,22 @@ public class StudentService implements IStudentService {
             // if (studentDetails.getContractStatus() != null) {
             // student.setContractStatus(studentDetails.getContractStatus());
             // }
-            // if (studentDetails.getAddress() != null) {
-            // student.setAddress(studentDetails.getAddress());
-            // }
-            // if (studentDetails.getFullAddress() != null) {
-            // student.setFullAddress(studentDetails.getFullAddress());
-            // }
-            // if (studentDetails.getWardId() != null) {
-            // Optional<Ward> ward = wardRepository.findById(studentDetails.getWardId());
-            // ward.ifPresent(student::setWard);
-            // }
-            // if (studentDetails.getDistrictId() != null) {
-            // Optional<District> district =
-            // districtRepository.findById(studentDetails.getDistrictId());
-            // district.ifPresent(student::setDistrict);
-            // }
-            student.setBirthplace(provinceName);
+            if (studentDetails.getAddress() != null) {
+                student.setAddress(studentDetails.getAddress());
+            }
+            student.setFullAddress(fullAddress);
+
+            if (studentDetails.getWardId() != null) {
+                Optional<Ward> ward = wardRepository.findById(studentDetails.getWardId());
+                ward.ifPresent(student::setWard);
+            }
+            if (studentDetails.getDistrictId() != null) {
+                Optional<District> district = districtRepository.findById(studentDetails.getDistrictId());
+                district.ifPresent(student::setDistrict);
+            }
+            student.setBirthplace(studentDetails.getProvinceId() != null
+                    ? provinceRepository.findById(studentDetails.getProvinceId()).map(Province::getName).orElse("")
+                    : "");
 
             if (studentDetails.getProvinceId() != null) {
                 Optional<Province> province = provinceRepository.findById(studentDetails.getProvinceId());

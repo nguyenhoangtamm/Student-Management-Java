@@ -18,6 +18,7 @@ public class StudentDto {
     private LocalDate dateOfBirth;
     private String email;
     private String phoneNumber;
+    private String address;
     private Integer provinceId;
     private Integer districtId;
     private Integer wardId;
@@ -43,6 +44,7 @@ public class StudentDto {
         this.majorId = entity.getMajor() != null ? entity.getMajor().getId() : null;
         this.residenceStatus = entity.getResidenceStatus();
         this.academicYear = entity.getAcademicYear();
+        this.address = entity.getAddress();
         this.fullAddress = entity.getFullAddress(); // Địa chỉ đầy đủ (tùy chọn)
     }
 

@@ -50,6 +50,14 @@ public class CreateStudentRequest {
 
     @PositiveOrZero(message = "ID tỉnh phải là số không âm")
     private Integer provinceId;
+    @PositiveOrZero(message = "ID huyện phải là số không âm")
+    private Integer districtId;
+    @PositiveOrZero(message = "ID xã phải là số không âm")
+    private Integer wardId;
+
+    @NotBlank(message = "Địa chỉ là bắt buộc")
+    @Size(max = 255, message = "Địa chỉ tối đa 255 ký tự")
+    private String address;
 
     // Other fields remain optional and unchanged
 }

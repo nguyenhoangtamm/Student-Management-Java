@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Data
 public class UpdateStudentRequest {
 
-     @NotBlank(message = "Mã sinh viên là bắt buộc")
+    @NotBlank(message = "Mã sinh viên là bắt buộc")
     @Size(max = 255, message = "Mã sinh viên tối đa 255 ký tự")
     private String code;
 
@@ -51,4 +51,12 @@ public class UpdateStudentRequest {
 
     @PositiveOrZero(message = "ID tỉnh phải là số không âm")
     private Integer provinceId;
+    @PositiveOrZero(message = "ID huyện phải là số không âm")
+    private Integer districtId;
+    @PositiveOrZero(message = "ID xã phải là số không âm")
+    private Integer wardId;
+
+    @NotBlank(message = "Địa chỉ là bắt buộc")
+    @Size(max = 255, message = "Địa chỉ tối đa 255 ký tự")
+    private String address;
 }
