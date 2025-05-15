@@ -65,6 +65,8 @@ public class StudentService implements IStudentService {
 
     @Autowired
     private DistrictRepository districtRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private ProvinceRepository provinceRepository;
@@ -348,25 +350,37 @@ public class StudentService implements IStudentService {
             // Lấy lại từ DB để đảm bảo fetch được notifications
             Student student = studentRepository.findById(studentId)
                     .orElseThrow(() -> new RuntimeException("Student not found"));
+            StudentDashboardDto.OffCampusInfo offCampusInfo = new StudentDashboardDto.OffCampusInfo();
+            if (student.getResidenceStatus() == 2) {
 
-            StudentDashboardDto.OffCampusInfo offCampusInfo = new StudentDashboardDto.OffCampusInfo(
-                    student.getDormitory() != null ? student.getDormitory().getName() : "KTX Đại học Đồng Tháp",
-                    student.getContractStatus() != null && student.getContractStatus() == 1 ? "Đã ký hợp đồng"
-                            : "Chưa ký hợp đồng",
-                    "2025-03-09T15:00:50.000000Z",
-                    student.getRoom(),
-                    student.getFullAddress());
+                offCampusInfo = new StudentDashboardDto.OffCampusInfo(
+                        student.getDormitory() != null ? student.getDormitory().getName() : "KTX Đại học Đồng Tháp",
+                        student.getContractStatus() != null && student.getContractStatus() == 1 ? "Đã ký hợp đồng"
+                                : "Chưa ký hợp đồng",
+                        "2025-03-09T15:00:50.000000Z",
+                        student.getRoom(),
+                        student.getFullAddress());
+            } else if (student.getResidenceStatus() == 1) {
+                offCampusInfo = new StudentDashboardDto.OffCampusInfo(
+                        "KTX Đại học Đồng Tháp", null, null, null, null);
+            } else {
+                offCampusInfo = new StudentDashboardDto.OffCampusInfo(
+                        "Ở Nhà", null, null, null, null);
+            }
+
             GenderEnum gender = GenderEnum.fromValue(student.getGender());
             List<StudentNotificationDto> notifications = new ArrayList<>();
             for (StudentNotification studentNotification : student.getStudentNotifications()) {
                 Notification notification = studentNotification.getNotification();
-                notifications.add(new StudentNotificationDto(
-                        notification.getId(),
-                        notification.getTitle(),
-                        notification.getSlug(),
-                        notification.getContent(),
-                        notification.getCreatedAt().toString(),
-                        notification.getType()));
+                if (!notification.getIsDelete()) { // Only include notifications where isDelete is false
+                    notifications.add(new StudentNotificationDto(
+                            notification.getId(),
+                            notification.getTitle(),
+                            notification.getSlug(),
+                            notification.getContent(),
+                            notification.getCreatedAt().toString(),
+                            notification.getType()));
+                }
             }
 
             return new StudentDashboardDto(
@@ -431,16 +445,29 @@ public class StudentService implements IStudentService {
                     .orElseThrow(() -> new RuntimeException("Student not found"));
 
             List<StudentNotificationDto> notificationDtos = new ArrayList<>();
+            // List<Notification> notifications = notificationRepository.findAll().stream()
+            // .filter(notification -> !notification.getIsDelete())
+            // .collect(Collectors.toList());
+            // for (Notification notification : notifications){
+            // notificationDtos.add(new StudentNotificationDto(
+            // notification.getId(),
+            // notification.getTitle(),
+            // notification.getSlug(),
+            // notification.getContent(),
+            // notification.getCreatedAt().toString(),
+            // notification.getType()));
+            // }
             for (StudentNotification studentNotification : student.getStudentNotifications()) {
                 Notification notification = studentNotification.getNotification();
-                notificationDtos.add(new StudentNotificationDto(
-                        notification.getId(),
-                        notification.getTitle(),
-                        notification.getSlug(),
-                        notification.getContent(),
-                        notification.getCreatedAt().toString(),
-                        notification.getType()));
-
+                if (!notification.getIsDelete()) { // Check if the notification is not marked as deleted
+                    notificationDtos.add(new StudentNotificationDto(
+                            notification.getId(),
+                            notification.getTitle(),
+                            notification.getSlug(),
+                            notification.getContent(),
+                            notification.getCreatedAt().toString(),
+                            notification.getType()));
+                }
             }
 
             return new StudentHeaderInfoDto(student.getFullName(), student.getAvatar(), notificationDtos);
