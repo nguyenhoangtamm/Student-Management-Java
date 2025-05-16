@@ -15,5 +15,6 @@ public class StudentNotificationDto {
     private String content;
     private String date;
     private Integer type;
+    private Boolean isRead;
     
 }

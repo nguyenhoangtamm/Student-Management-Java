@@ -379,9 +379,12 @@ public class StudentService implements IStudentService {
                             notification.getSlug(),
                             notification.getContent(),
                             notification.getCreatedAt().toString(),
-                            notification.getType()));
+                            notification.getType(),
+                            studentNotification.isRead() // Include the read status
+                    ));
                 }
             }
+            long unreadCount = notifications.stream().filter(n -> !n.getIsRead()).count();
 
             return new StudentDashboardDto(
                     student.getCode(),
@@ -392,7 +395,7 @@ public class StudentService implements IStudentService {
                     student.getFaculty(),
                     student.getEmail(),
                     student.getAvatar(),
-                    notifications.size(),
+                    (int) unreadCount,
                     offCampusInfo,
                     notifications
 
@@ -466,7 +469,11 @@ public class StudentService implements IStudentService {
                             notification.getSlug(),
                             notification.getContent(),
                             notification.getCreatedAt().toString(),
-                            notification.getType()));
+                            notification.getType(),
+                            studentNotification.isRead())
+
+                    );
+
                 }
             }
 

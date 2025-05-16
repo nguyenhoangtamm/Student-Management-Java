@@ -10,6 +10,7 @@ import com.tam.StudentManagement.Model.Student;
 import com.tam.StudentManagement.Model.StudentNotification;
 import com.tam.StudentManagement.Repository.NotificationRepository;
 import com.tam.StudentManagement.Repository.StudentNotificationRepository;
+import com.tam.StudentManagement.Repository.StudentRepository;
 import com.tam.StudentManagement.Request.Notification.CreateNotificationRequest;
 import com.tam.StudentManagement.Request.Notification.UpdateNotificationRequest;
 import com.tam.StudentManagement.Security.StudentDetails;
@@ -35,6 +36,9 @@ public class NotificationService implements INotificationService {
 
     @Autowired
     private StudentNotificationRepository studentNotificationRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     @Override
     public List<Notification> getAllNotifications() {
@@ -140,22 +144,31 @@ public class NotificationService implements INotificationService {
 
     @Override
     public String readNotification(Integer id) {
-        Student student = new Student();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()
                 && authentication.getPrincipal() instanceof StudentDetails) {
             StudentDetails studentDetails = (StudentDetails) authentication.getPrincipal();
-            student = studentDetails.getStudent();
+            Integer studentId = studentDetails.getStudent().getId();
+
+            // Truy vấn lại student từ database để đảm bảo nằm trong session
+            Student student = studentRepository.findById(studentId)
+                    .orElseThrow(() -> new NotFoundException("Student not found"));
+
+            Notification notification = notificationRepository.findById(id)
+                    .filter(notifica -> !notifica.getIsDelete())
+                    .orElseThrow(() -> new NotFoundException("Notification not found with id: " + id));
+
+            StudentNotification studentNotification = student.getStudentNotifications()
+                    .stream()
+                    .filter(stuNotifica -> stuNotifica.getNotification().getId().equals(notification.getId()))
+                    .findFirst()
+                    .orElseThrow(() -> new NotFoundException("Student notification not found with id: " + id));
+
+            studentNotification.setRead(true);
+            studentNotificationRepository.save(studentNotification);
+            return "Notification marked as read successfully";
         }
-        StudentNotification studentNotification = new StudentNotification();
-        Notification notification = notificationRepository.findById(id)
-                .filter(notifica -> !notifica.getIsDelete())
-                .orElseThrow(() -> new NotFoundException("Notification not found with id: " + id));
-        studentNotification.setNotification(notification);
-        studentNotification.setRead(true);
-        studentNotification.setStudent(student);
-        studentNotificationRepository.save(studentNotification);
-        return "Notification marked as read successfully";
+        throw new NotFoundException("Student not found");
     }
 
     @Override
@@ -164,6 +177,14 @@ public class NotificationService implements INotificationService {
                 .filter(notifica -> !notifica.getIsDelete())
                 .orElseThrow(() -> new NotFoundException("Notification not found with id: " + id));
         notification.setSend(true);
+        List<Student> students = studentRepository.findAll();
+        for (Student student : students) {
+            StudentNotification studentNotification = new StudentNotification();
+            studentNotification.setNotification(notification);
+            studentNotification.setStudent(student);
+            studentNotification.setRead(false);
+            studentNotificationRepository.save(studentNotification);
+        }
 
         notificationRepository.save(notification);
         return "Notification sent successfully";
