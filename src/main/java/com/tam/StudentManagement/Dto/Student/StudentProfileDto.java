@@ -24,6 +24,6 @@ public class StudentProfileDto {
     public String dateOfBirth;
     public String birthPlace;
     public String email;
-    public String residenceStatus;
+    public Integer residenceStatus;
     public OffCampusDto offCampus;
 }

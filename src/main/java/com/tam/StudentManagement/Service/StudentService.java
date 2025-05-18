@@ -501,25 +501,28 @@ public class StudentService implements IStudentService {
                             .collect(Collectors.toList())
                     : new ArrayList<>();
 
-            ContractStatusEnum contractStatus = student.getContractStatus() != null
-                    ? ContractStatusEnum.fromValue(student.getContractStatus())
-                    : ContractStatusEnum.CHUA_KY;
-
-            OffCampusDto offCampusDto = new OffCampusDto(
-                    student.getDormitory() != null ? student.getDormitory().getName() : null,
-                    student.getDormitory() != null ? student.getDormitory().getAddress() : null,
-                    student.getDormitory() != null ? student.getDormitory().getOwnerName() : null,
-                    student.getDormitory() != null ? student.getDormitory().getPhoneNumber() : null,
-                    contractStatus.getLabel(),
-                    student.getRoom(),
-                    student.getMonthlyRent() != null ? student.getMonthlyRent().toString() : null,
-                    studentServiceDto);
             GenderEnum gender = GenderEnum.fromValue(student.getGender());
             StatusEnum status = StatusEnum.fromValue(student.getStatus());
             EducationLevelEnum educationLevel = student.getEducationLevel() != null
                     ? EducationLevelEnum.fromValue(student.getEducationLevel())
                     : EducationLevelEnum.DAI_HOC;
-            ResidenceStatusEnum residenceStatus = ResidenceStatusEnum.fromValue(student.getResidenceStatus());
+            OffCampusDto offCampusDto = null;
+            if (student.getResidenceStatus() == 2) {
+                ContractStatusEnum contractStatus = student.getContractStatus() != null
+                        ? ContractStatusEnum.fromValue(student.getContractStatus())
+                        : ContractStatusEnum.CHUA_KY;
+
+                offCampusDto = new OffCampusDto(
+                        student.getDormitory() != null ? student.getDormitory().getName() : null,
+                        student.getDormitory() != null ? student.getDormitory().getAddress() : null,
+                        student.getDormitory() != null ? student.getDormitory().getOwnerName() : null,
+                        student.getDormitory() != null ? student.getDormitory().getPhoneNumber() : null,
+                        contractStatus.getLabel(),
+                        student.getRoom(),
+                        student.getMonthlyRent() != null ? student.getMonthlyRent().toString() : null,
+                        studentServiceDto);
+            }
+
             EducationTypeEnum educationType = EducationTypeEnum.fromValue(student.getEducationType());
             return new StudentProfileDto(
                     student.getCode(),
@@ -538,7 +541,7 @@ public class StudentService implements IStudentService {
                     student.getDateOfBirth().toString(),
                     student.getBirthplace(),
                     student.getEmail(),
-                    residenceStatus.getLabel(),
+                    student.getResidenceStatus(),
                     offCampusDto
 
             );
@@ -586,10 +589,14 @@ public class StudentService implements IStudentService {
                     : ContractStatusEnum.CHUA_KY;
 
             StudentContractDto contractDto = new StudentContractDto();
-            contractDto.setDormitoryId(student.getDormitory().getId());
+            if (student.getDormitory() != null) {
+                contractDto.setDormitoryId(student.getDormitory().getId());
+
+            }
+            contractDto.setDormitoryId(null);
             contractDto.setPrice(student.getMonthlyRent() != null ? student.getMonthlyRent().toString() : null);
             contractDto.setRoom(student.getRoom());
-            contractDto.setStatus(contractStatus.getValue());
+            contractDto.setStatus(student.getResidenceStatus());
 
             return contractDto;
         }
