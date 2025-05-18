@@ -1,6 +1,7 @@
 package com.tam.StudentManagement.Service.Interface;
 
 import com.tam.StudentManagement.Dto.Dormitory.DormitoryDto;
+import com.tam.StudentManagement.Dto.Dormitory.DormitoryPaginationDto;
 import com.tam.StudentManagement.Dto.Dormitory.DormitoryReviewDto;
 import com.tam.StudentManagement.Dto.Dormitory.GetDormitoryBySlug;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
@@ -23,7 +24,9 @@ public interface IDormitoryService {
 
     String deleteDormitory(Integer id);
 
-    PaginationDto<DormitoryDto> getDormitoriesByPagination(int pageNumber, int pageSize, String keyword);
-    GetDormitoryBySlug getDormitoryBySlug(String slug); 
+    PaginationDto<DormitoryPaginationDto> getDormitoriesByPagination(int pageNumber, int pageSize, String keyword);
+
+    GetDormitoryBySlug getDormitoryBySlug(String slug);
+
     List<DormitoryReviewDto> getDormitoryReviewById(int id);
 }

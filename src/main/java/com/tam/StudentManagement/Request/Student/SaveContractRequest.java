@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class SaveContractRequest {
-    @NotNull(message = "Dormitory ID cannot be null")
     private Integer dormitoryId;
 
     @NotBlank(message = "Price cannot be blank")

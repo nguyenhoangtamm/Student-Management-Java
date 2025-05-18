@@ -35,5 +35,5 @@ public class File extends BaseModel {
     private String fileableType;
 
     @Column(name = "fileable_id")
-    private Long fileableId;
+    private Integer fileableId;
 }

@@ -1,6 +1,7 @@
 package com.tam.StudentManagement.Controller;
 
 import com.tam.StudentManagement.Dto.Dormitory.DormitoryDto;
+import com.tam.StudentManagement.Dto.Dormitory.DormitoryPaginationDto;
 import com.tam.StudentManagement.Dto.Dormitory.DormitoryReviewDto;
 import com.tam.StudentManagement.Dto.Dormitory.GetDormitoryBySlug;
 import com.tam.StudentManagement.Dto.Common.PaginationDto;
@@ -58,11 +59,11 @@ public class DormitoryController {
     }
 
     @GetMapping("/pagination")
-    public ResponseEntity<ApiResponse<PaginationDto<DormitoryDto>>> getDormitoriesByPagination(
+    public ResponseEntity<ApiResponse<PaginationDto<DormitoryPaginationDto>>> getDormitoriesByPagination(
             @RequestParam int pageNumber,
             @RequestParam int pageSize,
             @RequestParam(required = false) String keyword) {
-        PaginationDto<DormitoryDto> data = dormitoryService.getDormitoriesByPagination(pageNumber, pageSize, keyword);
+        PaginationDto<DormitoryPaginationDto> data = dormitoryService.getDormitoriesByPagination(pageNumber, pageSize, keyword);
         return ResponseEntity.ok(ApiResponse.success("Get dormitories by pagination successfully", data));
     }
 

@@ -1,6 +1,7 @@
 package com.tam.StudentManagement.Service;
 
 import com.tam.StudentManagement.Dto.Dormitory.DormitoryDto;
+import com.tam.StudentManagement.Dto.Dormitory.DormitoryPaginationDto;
 import com.tam.StudentManagement.Dto.Dormitory.DormitoryReviewDto;
 import com.tam.StudentManagement.Dto.Dormitory.GetDormitoryBySlug;
 import com.tam.StudentManagement.Dto.Dormitory.CreateDormitoryDto;
@@ -13,6 +14,7 @@ import com.tam.StudentManagement.Model.District;
 import com.tam.StudentManagement.Model.Province;
 import com.tam.StudentManagement.Model.Review;
 import com.tam.StudentManagement.Repository.DormitoryRepository;
+import com.tam.StudentManagement.Repository.FileRepository;
 import com.tam.StudentManagement.Repository.WardRepository;
 import com.tam.StudentManagement.Repository.DistrictRepository;
 import com.tam.StudentManagement.Repository.ProvinceRepository;
@@ -44,6 +46,8 @@ public class DormitoryService implements IDormitoryService {
 
     @Autowired
     private ProvinceRepository provinceRepository;
+    @Autowired
+    private FileRepository fileRepository;
 
     @Override
     public List<Dormitory> getAllDormitories() {
@@ -219,7 +223,8 @@ public class DormitoryService implements IDormitoryService {
     }
 
     @Override
-    public PaginationDto<DormitoryDto> getDormitoriesByPagination(int pageNumber, int pageSize, String keyword) {
+    public PaginationDto<DormitoryPaginationDto> getDormitoriesByPagination(int pageNumber, int pageSize,
+            String keyword) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         Page<Dormitory> dormitoryPage;
 
@@ -231,11 +236,20 @@ public class DormitoryService implements IDormitoryService {
             dormitoryPage = dormitoryRepository.findAll(pageable);
         }
 
-        List<DormitoryDto> dormitoryDtos = dormitoryPage.getContent().stream()
-                .filter(dormitory -> !dormitory.getIsDelete())
-                .sorted((d1, d2) -> d1.getName().compareToIgnoreCase(d2.getName()))
-                .map(DormitoryDto::new)
-                .collect(Collectors.toList());
+        List<DormitoryPaginationDto> dormitoryDtos = new java.util.ArrayList<>();
+        for (Dormitory dormitory : dormitoryPage.getContent()) {
+            if (!dormitory.getIsDelete()) {
+
+                String imageUrl = fileRepository.findAll().stream()
+                        .filter(file -> file.getFileableType().equals("dormitory")
+                                && file.getFileableId().equals(dormitory.getId()))
+                        .map(file -> file.getPath())
+                        .findFirst()
+                        .orElse(null);
+                dormitoryDtos.add(new DormitoryPaginationDto(dormitory, imageUrl));
+            }
+        }
+        dormitoryDtos.sort((d1, d2) -> d1.getName().compareToIgnoreCase(d2.getName()));
 
         PaginationInfo paginationInfo = new PaginationInfo(
                 pageNumber,
@@ -243,7 +257,7 @@ public class DormitoryService implements IDormitoryService {
                 dormitoryPage.getTotalPages(),
                 dormitoryPage.getTotalPages());
 
-        return new PaginationDto<DormitoryDto>(dormitoryDtos, paginationInfo);
+        return new PaginationDto<DormitoryPaginationDto>(dormitoryDtos, paginationInfo);
     }
 
     public GetDormitoryBySlug getDormitoryBySlug(String slug) {
@@ -252,7 +266,13 @@ public class DormitoryService implements IDormitoryService {
         if (dormitory == null) {
             throw new RuntimeException("Dormitory not found with slug: " + slug);
         }
-        GetDormitoryBySlug getSlug = new GetDormitoryBySlug(dormitory);
+        String imageUrl = fileRepository.findAll().stream()
+                .filter(file -> file.getFileableType().equals("dormitory")
+                        && file.getFileableId().equals(dormitory.getId()))
+                .map(file -> file.getPath())
+                .findFirst()
+                .orElse(null);
+        GetDormitoryBySlug getSlug = new GetDormitoryBySlug(dormitory, imageUrl);
         return getSlug;
     }
 
